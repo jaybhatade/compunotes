@@ -4,6 +4,7 @@ import AddBtn from '../../../Components/UI/AddBtn';
 import Header from '../../../Components/HeaderComp';
 import NoteCard from '../../../Components/NoteCard';
 import CategoryLink from '../../../Components/CategoryLink';
+import NoteList from '../../../Components/NoteList';
 
 // Home Page
 const HomePage = () => {
@@ -32,9 +33,7 @@ const HomePage = () => {
             <a href="#" className="text-sm text-blue-400 transition-colors duration-200">View all</a>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <NoteCard title="React Hooks" date="2 days ago" content="Learn how to use React Hooks to build powerful and reusable components." />
-            <NoteCard title="Java Streams" date="5 days ago" content="Explore the power of Java Streams to write concise and efficient code." />
-            <NoteCard title="Tailwind CSS" date="1 week ago" content="Lorem ipsum" />
+            <NoteList/>
           </div>
         </section>
         

@@ -2,11 +2,15 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 require("dotenv").config();
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from the "dist" directory
+app.use(express.static(path.join(__dirname, "dist")));
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -50,8 +54,6 @@ app.get("/api/mynotes", async (req, res) => {
     handleErrors(res, err, "Error fetching notes");
   }
 });
-
-
 
 app.get("/api/topics", async (req, res) => {
   try {
@@ -100,7 +102,9 @@ app.post("/api/topics", async (req, res) => {
       "INSERT INTO Topics (TopicName, Description) VALUES (?, ?)",
       [topicName, description]
     );
-    res.status(201).json({ message: "Topic added successfully", id: result.insertId });
+    res
+      .status(201)
+      .json({ message: "Topic added successfully", id: result.insertId });
   } catch (err) {
     handleErrors(res, err, "Error creating topic");
   }
@@ -116,7 +120,9 @@ app.post("/api/notes", async (req, res) => {
       "INSERT INTO Notes (TopicID, Title, Content, VideoLink) VALUES (?, ?, ?, ?)",
       [topicId, title, content, videoLink]
     );
-    res.status(201).json({ message: "Note added successfully", id: result.insertId });
+    res
+      .status(201)
+      .json({ message: "Note added successfully", id: result.insertId });
   } catch (err) {
     handleErrors(res, err, "Error creating note");
   }
@@ -128,11 +134,12 @@ app.post("/api/tags", async (req, res) => {
     return res.status(400).json({ error: "Tag name is required" });
   }
   try {
-    const result = await dbQuery(
-      "INSERT INTO Tags (TagName) VALUES (?)",
-      [tagName]
-    );
-    res.status(201).json({ message: "Tag added successfully", id: result.insertId });
+    const result = await dbQuery("INSERT INTO Tags (TagName) VALUES (?)", [
+      tagName,
+    ]);
+    res
+      .status(201)
+      .json({ message: "Tag added successfully", id: result.insertId });
   } catch (err) {
     handleErrors(res, err, "Error creating tag");
   }
@@ -144,10 +151,10 @@ app.post("/api/note-tags", async (req, res) => {
     return res.status(400).json({ error: "Note ID and Tag ID are required" });
   }
   try {
-    await dbQuery(
-      "INSERT INTO NoteTags (NoteID, TagID) VALUES (?, ?)",
-      [noteId, tagId]
-    );
+    await dbQuery("INSERT INTO NoteTags (NoteID, TagID) VALUES (?, ?)", [
+      noteId,
+      tagId,
+    ]);
     res.status(201).json({ message: "Note-Tag relation added successfully" });
   } catch (err) {
     handleErrors(res, err, "Error creating note-tag relation");
@@ -160,14 +167,16 @@ app.delete("/api/notes/:id", async (req, res) => {
   try {
     // First, delete related entries in NoteTags
     await dbQuery("DELETE FROM NoteTags WHERE NoteID = ?", [noteId]);
-    
+
     // Then delete the note
-    const result = await dbQuery("DELETE FROM Notes WHERE NoteID = ?", [noteId]);
-    
+    const result = await dbQuery("DELETE FROM Notes WHERE NoteID = ?", [
+      noteId,
+    ]);
+
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Note not found" });
     }
-    
+
     res.json({ message: "Note deleted successfully" });
   } catch (err) {
     handleErrors(res, err, "Error deleting note");
@@ -177,7 +186,9 @@ app.delete("/api/notes/:id", async (req, res) => {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({ error: "An unexpected error occurred", details: err.message });
+  res
+    .status(500)
+    .json({ error: "An unexpected error occurred", details: err.message });
 });
 
 const PORT = process.env.PORT || 3000;
