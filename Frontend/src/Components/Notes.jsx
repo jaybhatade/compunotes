@@ -32,12 +32,13 @@ const NoteList = () => {
   return (
     <div className="bg-gray-900 min-h-screen p-8">
       <h1 className="text-3xl font-bold text-white mb-8">My Notes</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {notes.map((note) => (
           <div key={note.NoteID} className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-semibold text-white mb-2">{note.Title}</h2>
               <pre className="text-gray-400 whitespace-pre-wrap">{note.Content}</pre>
+              <br/>
               {note.VideoLink === null && (
                 <p className="text-red-500">No video link available.</p> // Inform the user if VideoLink is null
               )}
@@ -48,7 +49,7 @@ const NoteList = () => {
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    className="absolute top-0 left-0 w-full h-full"
+                    className="absolute top-0 left-0 w-full h-full lg:w-[100%] md:pl-14 md:pr-14"
                   ></iframe>
                 </div>
               )}
