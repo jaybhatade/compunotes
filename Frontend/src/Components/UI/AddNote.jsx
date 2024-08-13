@@ -5,7 +5,7 @@ export default function NotesForm() {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    video: ''
+    videoLink: ''  // Changed 'video' to 'videoLink' to match the database structure
   });
 
   const handleChange = (e) => {
@@ -21,7 +21,7 @@ export default function NotesForm() {
     try {
       await axios.post('/api/notes', formData);
       alert('Note added successfully!');
-      setFormData({ title: '', content: '', video: '' }); // Reset form
+      setFormData({ title: '', content: '', videoLink: '' }); // Reset form
     } catch (error) {
       console.error('Error adding note:', error);
       alert('Error adding note. Please try again.');
@@ -71,15 +71,15 @@ export default function NotesForm() {
           </div>
           <div className="space-y-2">
             <label
-              htmlFor="video"
+              htmlFor="videoLink"
               className="block text-sm font-medium text-gray-300"
             >
               Video Link
             </label>
             <input
-              id="video"
-              name="video"
-              value={formData.video}
+              id="videoLink"
+              name="videoLink"
+              value={formData.videoLink}
               onChange={handleChange}
               placeholder="Enter a video link"
               className="block w-full h-10 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-sm text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -92,6 +92,25 @@ export default function NotesForm() {
             Add Note
           </button>
         </form>
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-gray-100">Preview</h2>
+          <div className="mt-4 p-4 border border-gray-600 rounded-md bg-gray-800">
+            <h3 className="text-md font-semibold text-gray-100">{formData.title}</h3>
+            <pre className="mt-2 whitespace-pre-wrap text-gray-100">{formData.content}</pre>
+            {formData.videoLink && (
+              <div className="mt-2">
+                <a
+                  href={formData.videoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  Watch Video
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

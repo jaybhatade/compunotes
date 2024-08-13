@@ -42,6 +42,17 @@ const handleErrors = (res, err, errorMessage) => {
 };
 
 // GET endpoints for fetching data
+app.get("/api/mynotes", async (req, res) => {
+  try {
+    const notes = await dbQuery("SELECT * FROM Notes");
+    res.json(notes);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching notes");
+  }
+});
+
+
+
 app.get("/api/topics", async (req, res) => {
   try {
     const topics = await dbQuery("SELECT * FROM Topics");

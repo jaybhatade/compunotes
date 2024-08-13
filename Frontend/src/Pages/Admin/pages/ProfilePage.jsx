@@ -1,8 +1,11 @@
 import React from 'react'
+import NoteList from '../../../Components/Notes'
 
 function ProfilePage() {
   return (
-    <div>ProfilePage</div>
+    <div className='h-screen bg-gray-900'>
+      <NoteList/>
+    </div>
   )
 }
 
