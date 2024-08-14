@@ -111,14 +111,14 @@ app.post("/api/topics", async (req, res) => {
 });
 
 app.post("/api/notes", async (req, res) => {
-  const { topicId, title, content, videoLink } = req.body;
+  const {title, content, videoLink } = req.body;
   if (!title || !content) {
     return res.status(400).json({ error: "Title and content are required" });
   }
   try {
     const result = await dbQuery(
-      "INSERT INTO Notes (TopicID, Title, Content, VideoLink) VALUES (?, ?, ?, ?)",
-      [topicId, title, content, videoLink]
+      "INSERT INTO Notes (Title, Content, VideoLink) VALUES ( ?, ?, ?)",
+      [title, content, videoLink]
     );
     res
       .status(201)
