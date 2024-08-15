@@ -3,9 +3,10 @@ import SimpleNoteForm from '../../../Components/UI/AddNote'
 
 function AddNotesPage() {
   return (
-    <div>
+    <div className=''>
 
       <SimpleNoteForm />
+      
     </div>
   )
 }

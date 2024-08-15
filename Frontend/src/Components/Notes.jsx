@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const NoteList = () => {
+const NoteView = () => {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
@@ -69,4 +69,4 @@ const NoteList = () => {
   );
 };
 
-export default NoteList;
+export default NoteView;

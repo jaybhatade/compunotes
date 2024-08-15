@@ -109,6 +109,48 @@ app.get("/api/batches", async (req, res) => {
   }
 });
 
+
+app.get('/api/batches', async (req, res) => {
+  try {
+    const results = await dbQuery('SELECT * FROM Batches');
+    res.json(results);
+  } catch (err) {
+    handleErrors(res, err, 'Error retrieving batches');
+  }
+});
+
+
+app.get('/api/batches/:batchID', async (req, res) => {
+  const { batchID } = req.params;
+  try {
+    const result = await dbQuery('SELECT * FROM Batches WHERE BatchID = ?', [batchID]);
+    res.json(result);
+  } catch (err) {
+    handleErrors(res, err, 'Error retrieving batch details');
+  }
+});
+
+
+
+app.post('/api/batches', async (req, res) => {
+  const { BatchName } = req.body;
+
+  if (!BatchName) {
+    return res.status(400).json({ error: 'BatchName is required' });
+  }
+
+  try {
+    const result = await dbQuery('INSERT INTO Batches (BatchName) VALUES (?)', [BatchName]);
+    res.status(201).json({ message: 'Batch created successfully', batchId: result.insertId });
+  } catch (err) {
+    handleErrors(res, err, 'Error creating batch');
+  }
+});
+
+
+
+
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);

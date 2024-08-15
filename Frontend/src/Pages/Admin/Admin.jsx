@@ -6,10 +6,11 @@ import ProfilePage from "../Admin/pages/ProfilePage";
 import AddNotesPage from '../Admin/pages/AddNotesPage';
 import BatchesPage from '../Admin/pages/BatchesPage';
 import DatabasePage from '../Admin/pages/DatabasePage';
+import NewBatch from './SubPages/NewBatch';
 
 
 // Define the MainLayout component
-const MainLayout = () => {
+const AdminLayout = () => {
   return (
     <div>
       <NavigationBar />
@@ -25,13 +26,14 @@ function Admin() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <MainLayout />,
+      element: <AdminLayout />,
       children: [
         { index: true, element: <HomePage /> },
         { path: "add", element: <AddNotesPage /> },
         // { path: "search", element: <SearchPage /> },
         { path: "database", element: <DatabasePage /> },
         { path: "batches", element: <BatchesPage/> },
+        { path: "batches/new", element: <NewBatch /> },
         { path: "profile", element: <ProfilePage /> },
       ],
     },

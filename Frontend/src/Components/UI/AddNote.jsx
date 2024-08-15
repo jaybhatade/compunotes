@@ -7,7 +7,7 @@ export default function NotesForm() {
     content: '',
     videoLink: '',
     category: '',
-    // batchId: '' // Commented out the batchId field
+    batchId: ''
   });
 
   const [batches, setBatches] = useState([]);
@@ -38,7 +38,7 @@ export default function NotesForm() {
     try {
       await axios.post('/api/notes', formData);
       alert('Note added successfully!');
-      setFormData({ title: '', content: '', videoLink: '', category: '' }); // Reset form without batchId
+      setFormData({ title: '', content: '', videoLink: '', category: '', batchId: '' }); // Reset form
     } catch (error) {
       console.error('Error adding note:', error);
       alert('Error adding note. Please try again.');
@@ -46,7 +46,7 @@ export default function NotesForm() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900">
+    <div className="flex flex-col min-h-screen bg-gray-900 pb-20">
       <div className="sticky top-0 z-10 bg-gray-800 px-4 py-3 border-b border-gray-700">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-medium text-gray-100">Add New Note</h1>
@@ -108,7 +108,7 @@ export default function NotesForm() {
               className="block w-full h-10 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-sm text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
-          {/* <div className="space-y-2">
+          <div className="space-y-2">
             <label htmlFor="batchId" className="block text-sm font-medium text-gray-300">
               Batch
             </label>
@@ -126,7 +126,7 @@ export default function NotesForm() {
                 </option>
               ))}
             </select>
-          </div> */}
+          </div>
           <button
             type="submit"
             className="px-4 py-2 rounded-md bg-blue-500 text-white font-medium text-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -152,12 +152,15 @@ export default function NotesForm() {
               </div>
             )}
             <p className="mt-2 text-sm text-gray-400">Category: {formData.category}</p>
-            {/* <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-gray-400">
               Batch: {batches.find(b => b.BatchID === parseInt(formData.batchId))?.BatchName || 'Not selected'}
-            </p> */}
+            </p>
           </div>
         </div>
       </div>
+
+      
+
     </div>
   );
 }

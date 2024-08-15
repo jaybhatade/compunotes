@@ -1,10 +1,10 @@
 import React from 'react'
-import NoteList from '../../../Components/Notes'
+import NoteView from '../../../Components/Notes'
 
 function ProfilePage() {
   return (
     <div className='h-screen bg-gray-900'>
-      <NoteList/>
+      <NoteView/>
     </div>
   )
 }

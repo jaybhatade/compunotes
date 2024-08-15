@@ -2,9 +2,7 @@ import React, { useEffect } from 'react';
 import { HiSearch } from 'react-icons/hi';
 import AddBtn from '../../../Components/UI/AddBtn';
 import Header from '../../../Components/HeaderComp';
-import NoteCard from '../../../Components/NoteCard';
 import CategoryLink from '../../../Components/CategoryLink';
-import NoteList from '../../../Components/NoteList';
 
 // Home Page
 const HomePage = () => {
@@ -33,7 +31,7 @@ const HomePage = () => {
             <a href="#" className="text-sm text-blue-400 transition-colors duration-200">View all</a>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <NoteList/>
+            
           </div>
         </section>
         
