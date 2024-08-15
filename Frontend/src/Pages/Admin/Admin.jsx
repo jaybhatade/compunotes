@@ -3,9 +3,9 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import NavigationBar from "../../Components/Navbar";
 import HomePage from "../Admin/pages/HomePage";
 import ProfilePage from "../Admin/pages/ProfilePage";
-import AddNotesPage from './Pages/AddNotesPage';
-import BatchesPage from './pages/BatchesPage';
-import DatabasePage from './pages/DatabasePage';
+import AddNotesPage from '../Admin/pages/AddNotesPage';
+import BatchesPage from '../Admin/pages/BatchesPage';
+import DatabasePage from '../Admin/pages/DatabasePage';
 
 
 // Define the MainLayout component
