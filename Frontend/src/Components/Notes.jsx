@@ -7,7 +7,7 @@ const NoteList = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await axios.get('/api/mynotes');
+        const response = await axios.get('/api/notes');
         console.log('Fetched notes:', response.data); // Log the entire response data
         setNotes(response.data);
 
