@@ -130,6 +130,32 @@ app.get('/api/batches/:batchID', async (req, res) => {
   }
 });
 
+app.get('/api/batches/details/:batchId', async (req, res) => {
+  const { batchId } = req.params;
+
+  try {
+    // Query to get batch details
+    const batchQuery = 'SELECT * FROM Batches WHERE BatchID = ?';
+    const batchResult = await dbQuery(batchQuery, [batchId]);
+
+    if (batchResult.length === 0) {
+      return res.status(404).json({ error: 'Batch not found' });
+    }
+
+    // Query to get notes for the batch
+    const notesQuery = 'SELECT * FROM Notes WHERE BatchID = ?';
+    const notesResult = await dbQuery(notesQuery, [batchId]);
+
+    res.json({
+      batch: batchResult[0],
+      notes: notesResult,
+    });
+  } catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Failed to retrieve batch details and notes' });
+  }
+});
+
 
 
 app.post('/api/batches', async (req, res) => {

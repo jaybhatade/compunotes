@@ -7,6 +7,8 @@ import AddNotesPage from '../Admin/pages/AddNotesPage';
 import BatchesPage from '../Admin/pages/BatchesPage';
 import DatabasePage from '../Admin/pages/DatabasePage';
 import NewBatch from './SubPages/NewBatch';
+import BatchDetails from '../../Components/Batch';
+import BatchNote from './SubPages/BatchNote';
 
 
 // Define the MainLayout component
@@ -34,6 +36,8 @@ function Admin() {
         { path: "database", element: <DatabasePage /> },
         { path: "batches", element: <BatchesPage/> },
         { path: "batches/new", element: <NewBatch /> },
+        { path: "batches/details/:batchId", element: <BatchDetails /> },
+        { path: "/batches/:batchId/notes/:noteId", element: <BatchNote /> },
         { path: "profile", element: <ProfilePage /> },
       ],
     },

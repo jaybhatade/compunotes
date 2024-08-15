@@ -20,7 +20,7 @@ const Batches = () => {
   }, []);
 
   const handleBatchClick = (batchID) => {
-    navigate(`/batches/${batchID}`);
+    navigate(`/batches/details/${batchID}`);
   };
 
   const handleAddBatch = () => {
