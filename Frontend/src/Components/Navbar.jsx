@@ -4,11 +4,11 @@ import { HiHome, HiDatabase, HiPlus, HiUserGroup, HiUser } from 'react-icons/hi'
 
 const NavigationBar = () => {
     const navItems = [
-        { name: 'Home', icon: HiHome, path: '/' },
-        { name: 'Batches', icon: HiUserGroup, path: '/batches' },
-        { name: 'Add', icon: HiPlus, path: '/add' },
-        { name: 'Database', icon: HiDatabase, path: '/database' },
-        { name: 'Profile', icon: HiUser, path: '/profile' }
+        { name: 'Home', icon: HiHome, path: '/a/home' },
+        { name: 'Batches', icon: HiUserGroup, path: '/a/batches' },
+        { name: 'Add', icon: HiPlus, path: '/a/add' },
+        { name: 'Database', icon: HiDatabase, path: '/a/database' },
+        { name: 'Profile', icon: HiUser, path: '/a/profile' }
     ];
 
     return (

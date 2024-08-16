@@ -19,13 +19,14 @@ const Batches = () => {
     fetchBatches();
   }, []);
 
-  const handleBatchClick = (batchID) => {
-    navigate(`/batches/details/${batchID}`);
-  };
+const handleBatchClick = (batchID) => {
+  navigate(`details/${batchID}`);
+};
 
-  const handleAddBatch = () => {
-    navigate('/batches/new');
-  };
+const handleAddBatch = () => {
+  navigate('new');
+};
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">

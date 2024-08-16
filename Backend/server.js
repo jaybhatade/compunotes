@@ -53,7 +53,9 @@ app.post("/api/notes", async (req, res) => {
       "INSERT INTO Notes (Title, Content, VideoLink, Category, BatchID) VALUES (?, ?, ?, ?, ?)",
       [title, content, videoLink, category, batchId]
     );
-    res.status(201).json({ message: "Note created successfully", noteId: result.insertId });
+    res
+      .status(201)
+      .json({ message: "Note created successfully", noteId: result.insertId });
   } catch (err) {
     handleErrors(res, err, "Error creating note");
   }
@@ -78,7 +80,9 @@ app.put("/api/notes/:id", async (req, res) => {
 
 app.delete("/api/notes/:id", async (req, res) => {
   try {
-    const result = await dbQuery("DELETE FROM Notes WHERE NoteID = ?", [req.params.id]);
+    const result = await dbQuery("DELETE FROM Notes WHERE NoteID = ?", [
+      req.params.id,
+    ]);
     if (result.affectedRows === 0) {
       res.status(404).json({ error: "Note not found" });
     } else {
@@ -92,7 +96,9 @@ app.delete("/api/notes/:id", async (req, res) => {
 // Users endpoints
 app.get("/api/users", async (req, res) => {
   try {
-    const users = await dbQuery("SELECT UserID, Username, FirstName, LastName, Role FROM Users");
+    const users = await dbQuery(
+      "SELECT UserID, Username, FirstName, LastName, Role FROM Users"
+    );
     res.json(users);
   } catch (err) {
     handleErrors(res, err, "Error fetching users");
@@ -109,41 +115,41 @@ app.get("/api/batches", async (req, res) => {
   }
 });
 
-
-app.get('/api/batches', async (req, res) => {
+app.get("/api/batches", async (req, res) => {
   try {
-    const results = await dbQuery('SELECT * FROM Batches');
+    const results = await dbQuery("SELECT * FROM Batches");
     res.json(results);
   } catch (err) {
-    handleErrors(res, err, 'Error retrieving batches');
+    handleErrors(res, err, "Error retrieving batches");
   }
 });
 
-
-app.get('/api/batches/:batchID', async (req, res) => {
+app.get("/api/batches/:batchID", async (req, res) => {
   const { batchID } = req.params;
   try {
-    const result = await dbQuery('SELECT * FROM Batches WHERE BatchID = ?', [batchID]);
+    const result = await dbQuery("SELECT * FROM Batches WHERE BatchID = ?", [
+      batchID,
+    ]);
     res.json(result);
   } catch (err) {
-    handleErrors(res, err, 'Error retrieving batch details');
+    handleErrors(res, err, "Error retrieving batch details");
   }
 });
 
-app.get('/api/batches/details/:batchId', async (req, res) => {
+app.get("/api/batches/details/:batchId", async (req, res) => {
   const { batchId } = req.params;
 
   try {
     // Query to get batch details
-    const batchQuery = 'SELECT * FROM Batches WHERE BatchID = ?';
+    const batchQuery = "SELECT * FROM Batches WHERE BatchID = ?";
     const batchResult = await dbQuery(batchQuery, [batchId]);
 
     if (batchResult.length === 0) {
-      return res.status(404).json({ error: 'Batch not found' });
+      return res.status(404).json({ error: "Batch not found" });
     }
 
     // Query to get notes for the batch
-    const notesQuery = 'SELECT * FROM Notes WHERE BatchID = ?';
+    const notesQuery = "SELECT * FROM Notes WHERE BatchID = ?";
     const notesResult = await dbQuery(notesQuery, [batchId]);
 
     res.json({
@@ -151,36 +157,128 @@ app.get('/api/batches/details/:batchId', async (req, res) => {
       notes: notesResult,
     });
   } catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Failed to retrieve batch details and notes' });
+    console.error("Database query error:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve batch details and notes" });
   }
 });
 
-
-
-app.post('/api/batches', async (req, res) => {
-  const { BatchName } = req.body;
-
-  if (!BatchName) {
-    return res.status(400).json({ error: 'BatchName is required' });
-  }
-
+app.post("/api/batches", async (req, res) => {
   try {
-    const result = await dbQuery('INSERT INTO Batches (BatchName) VALUES (?)', [BatchName]);
-    res.status(201).json({ message: 'Batch created successfully', batchId: result.insertId });
+    const { BatchName } = req.body;
+
+    if (!BatchName) {
+      return res.status(400).json({ error: "BatchName is required" });
+    }
+
+    // Check if the batch already exists
+    const existingBatches = await dbQuery(
+      "SELECT * FROM Batches WHERE BatchName = ?",
+      [BatchName]
+    );
+
+    if (existingBatches.length > 0) {
+      return res.status(409).json({ error: "Batch already exists" });
+    }
+
+    // Insert new batch
+    await dbQuery("INSERT INTO Batches (BatchName) VALUES (?)", [BatchName]);
+
+    res.status(201).json({ message: "Batch created successfully" });
   } catch (err) {
-    handleErrors(res, err, 'Error creating batch');
+    handleErrors(res, err, "Error creating batch");
   }
 });
 
 
+// Get all users
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await dbQuery("SELECT * FROM Users");
+    res.json(users);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching users");
+  }
+});
 
+// Add a new user
+app.post("/api/users", async (req, res) => {
+  try {
+    const {
+      Username,
+      Password,
+      PhoneNumber,
+      Email,
+      FirstName,
+      LastName,
+      Role,
+      ProfileIcon,
+    } = req.body;
+    const result = await dbQuery(
+      "INSERT INTO Users (Username, Password, PhoneNumber, Email, FirstName, LastName, Role, ProfileIcon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        Username,
+        Password,
+        PhoneNumber,
+        Email,
+        FirstName,
+        LastName,
+        Role,
+        ProfileIcon,
+      ]
+    );
+    res
+      .status(201)
+      .json({ message: "User added successfully", userId: result.insertId });
+  } catch (err) {
+    handleErrors(res, err, "Error adding user");
+  }
+});
 
+// Delete a user by ID
+app.delete("/api/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await dbQuery("DELETE FROM Users WHERE UserID = ?", [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    handleErrors(res, err, "Error deleting user");
+  }
+});
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const { Username, Password } = req.body;
+    const users = await dbQuery("SELECT * FROM Users WHERE Username = ?", [
+      Username,
+    ]);
+
+    if (users.length > 0) {
+      const user = users[0];
+      if (Password === user.Password) {
+        // Direct comparison without hashing
+        res.json({ Role: user.Role });
+      } else {
+        res.status(401).json({ error: "Invalid Username or Password" });
+      }
+    } else {
+      res.status(401).json({ error: "Invalid Username or Password" });
+    }
+  } catch (err) {
+    handleErrors(res, err, "Error during login");
+  }
+});
 
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({ error: "An unexpected error occurred", details: err.message });
+  res
+    .status(500)
+    .json({ error: "An unexpected error occurred", details: err.message });
 });
 
 const PORT = process.env.PORT || 3000;

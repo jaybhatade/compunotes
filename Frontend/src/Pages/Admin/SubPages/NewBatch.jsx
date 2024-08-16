@@ -1,19 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { IoAlertCircle } from 'react-icons/io5';
 
 const NewBatch = () => {
   const [batchName, setBatchName] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Clear previous error messages
 
     try {
-      await axios.post('/api/batches', { BatchName: batchName });
-      navigate('/batches'); // Redirect to the batches list page
+      const response = await axios.post('/api/batches', { BatchName: batchName });
+
+      if (response.status === 201) {
+        navigate(-1); // Navigate to the previous page
+      }
     } catch (error) {
-      console.error('Error adding new batch:', error);
+      if (error.response && error.response.status === 409) {
+        setError('Batch already exists.'); // Set error message for batch already existing
+      } else {
+        console.error('Error adding new batch:', error);
+        setError('An unexpected error occurred.'); // Set error message for other errors
+      }
     }
   };
 
@@ -34,6 +45,12 @@ const NewBatch = () => {
             required
           />
         </div>
+        {error && (
+          <div className="mb-4 flex items-center text-red-400">
+            <IoAlertCircle className="mr-2" />
+            <span>{error}</span>
+          </div>
+        )}
         <button
           type="submit"
           className="w-full py-3 mt-4 text-lg font-semibold bg-blue-600 rounded-lg hover:bg-blue-700"
