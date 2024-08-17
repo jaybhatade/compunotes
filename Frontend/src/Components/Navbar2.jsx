@@ -2,13 +2,13 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { HiHome, HiDatabase, HiPlus, HiUserGroup, HiUser } from 'react-icons/hi';
 
-const NavigationBar = () => {
+const NavigationBar2 = () => {
     const navItems = [
-        { name: 'Home', icon: HiHome, path: '/a/home' },
-        { name: 'Batches', icon: HiUserGroup, path: '/a/batches' },
-        { name: 'Add', icon: HiPlus, path: '/a/add' },
-        { name: 'Database', icon: HiDatabase, path: '/a/database' },
-        { name: 'Profile', icon: HiUser, path: '/a/profile' }
+        { name: 'Home', icon: HiHome, path: '/s/home' },
+        { name: 'Batches', icon: HiUserGroup, path: '/s/batches' },
+        // { name: 'Add', icon: HiPlus, path: '/s/add' },
+        { name: 'Database', icon: HiDatabase, path: '/s/database' },
+        { name: 'Profile', icon: HiUser, path: '/s/profile' }
     ];
 
     return (
@@ -33,4 +33,4 @@ const NavigationBar = () => {
     );
 };
 
-export default NavigationBar;
+export default NavigationBar2;

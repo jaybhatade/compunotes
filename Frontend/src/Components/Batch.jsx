@@ -41,7 +41,7 @@ function BatchDetails() {
 
   // Function to handle click on a note
   const handleNoteClick = (noteId) => {
-    navigate(`/batches/${batchId}/notes/${noteId}`);
+    navigate(`notes/${noteId}`);
   };
 
   return (
