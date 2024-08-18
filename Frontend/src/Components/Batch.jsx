@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AiOutlineFileText } from 'react-icons/ai';
+import { AiOutlineFileText, AiOutlineArrowLeft } from 'react-icons/ai';
 
 function BatchDetails() {
   const { batchId } = useParams();
@@ -33,6 +33,10 @@ function BatchDetails() {
     navigate(`notes/${noteId}`);
   };
 
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
+
   if (error) {
     return <div className="text-center text-red-500">{error}</div>;
   }
@@ -43,14 +47,20 @@ function BatchDetails() {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
-      <h1 className="text-3xl font-bold mb-4">{batch.BatchName}</h1>
+      <div className="flex items-center mb-6">
+        <button onClick={handleBack} className="text-gray-400 hover:text-white flex items-center">
+          <AiOutlineArrowLeft className="mr-2" /> Back
+        </button>
+      </div>
+
+      <h1 className="text-2xl md:text-4xl font-bold mb-6">{batch.BatchName}</h1>
 
       <div className="space-y-4">
         {notes.length > 0 ? (
           notes.map((note) => (
             <div
               key={note.NoteID}
-              className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition"
+              className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition-transform transform hover:scale-[1.01]"
               onClick={() => handleNoteClick(note.NoteID)}
             >
               <div className="flex items-center mb-2">

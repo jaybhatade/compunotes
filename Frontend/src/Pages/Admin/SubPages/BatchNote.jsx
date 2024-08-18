@@ -9,6 +9,7 @@ function BatchNote() {
   const navigate = useNavigate();
   const [note, setNote] = useState(null);
   const [error, setError] = useState(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
 
   useEffect(() => {
     const fetchNoteDetails = async () => {
@@ -36,59 +37,111 @@ function BatchNote() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this note?')) {
-      try {
-        await axios.delete(`/api/notes/${noteId}`);
-        navigate(`/batches/${batchId}`);
-      } catch (error) {
-        setError('Failed to delete note. Please try again later.');
-      }
+    try {
+      await axios.delete(`/api/notes/${noteId}`);
+      navigate(-1);
+    } catch (error) {
+      setError('Failed to delete note. Please try again later.');
     }
+  };
+
+  const getYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url?.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
   };
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-red-500 text-lg">{error}</div>
+      <div className="bg-gray-900 text-white p-4 rounded-md">
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
 
   if (!note) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <FiLoader className="animate-spin text-gray-500 text-3xl" />
-        <span className="ml-2 text-gray-500">Loading...</span>
+      <div className="bg-gray-900 text-white p-4 rounded-md">
+        <FiLoader className="animate-spin" /> Loading...
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl">
+    <div className="bg-gray-900 min-h-screen p-4 pb-24">
       <div className="flex justify-between items-center mb-4">
-        <button onClick={handleBack} className="text-blue-600 flex items-center hover:text-blue-800 transition duration-200">
-          <AiOutlineArrowLeft className="mr-1" /> Back
+        <button onClick={handleBack} className="text-gray-400 hover:text-white flex items-center">
+          <AiOutlineArrowLeft className="mr-2" /> Back
         </button>
         <div className="flex space-x-4">
-          <button
-            onClick={handleEdit}
-            className="text-yellow-600 flex items-center hover:text-yellow-800 transition duration-200"
-          >
-            <AiOutlineEdit className="mr-1" /> Edit
+          <button onClick={handleEdit} className="text-gray-400 hover:text-white flex items-center">
+            <AiOutlineEdit className="mr-2" /> Edit
           </button>
           <button
-            onClick={handleDelete}
-            className="text-red-600 flex items-center hover:text-red-800 transition duration-200"
+            onClick={() => setShowDeletePopup(true)}
+            className="text-gray-400 hover:text-red-500 flex items-center"
           >
-            <AiOutlineDelete className="mr-1" /> Delete
+            <AiOutlineDelete className="mr-2" /> Delete
           </button>
         </div>
       </div>
 
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-3xl font-bold mb-4">{note.Title}</h2>
-        <p className="text-gray-700 leading-relaxed whitespace-pre-line">{note.Content}</p>
+      <h1 className="text-3xl font-bold text-white mb-8">{note.Title}</h1>
+
+      <div className="mb-4">
+        <pre className="bg-gray-800 text-sm md:text-lg text-white overflow-x-auto p-4 rounded-md whitespace-pre-wrap">
+          {note.Content}
+        </pre>
       </div>
+
+      {note.VideoLink === null && (
+        <p className="text-red-500">No video link available.</p>
+      )}
+
+      {note.VideoLink && getYouTubeId(note.VideoLink) && (
+        <div className="relative mb-4" style={{ paddingBottom: '56.25%', height: 0 }}>
+          <iframe
+            src={`https://www.youtube.com/embed/${getYouTubeId(note.VideoLink)}`}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute top-0 left-0 w-full h-full rounded-lg"
+          ></iframe>
+        </div>
+      )}
+
+      <p className="text-gray-500 text-sm mt-4">
+        Created: {new Date(note.CreatedAt).toLocaleString()}
+      </p>
+      {note.UpdatedAt && (
+        <p className="text-gray-500 text-sm">
+          Updated: {new Date(note.UpdatedAt).toLocaleString()}
+        </p>
+      )}
+
+      {/* Delete Confirmation Popup */}
+      {showDeletePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center px-4">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold text-white mb-4">Confirm Delete</h2>
+            <p className="text-gray-300 mb-6">Are you sure you want to delete this note? This action cannot be undone.</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowDeletePopup(false)}
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
