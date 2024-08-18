@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { HiHome, HiDatabase, HiPlus, HiUserGroup, HiUser } from 'react-icons/hi';
+import { HiHome, HiOutlineSearch, HiUserGroup, HiUser } from 'react-icons/hi';
+import { CgNotes } from "react-icons/cg";
 
 const NavigationBar2 = () => {
     const navItems = [
         { name: 'Home', icon: HiHome, path: '/s/home' },
         { name: 'Batches', icon: HiUserGroup, path: '/s/batches' },
-        // { name: 'Add', icon: HiPlus, path: '/s/add' },
-        { name: 'Database', icon: HiDatabase, path: '/s/database' },
+        { name: 'Search', icon: HiOutlineSearch, path: '/s/search' },
+        { name: 'Notes', icon: CgNotes, path: '/s/database' },
         { name: 'Profile', icon: HiUser, path: '/s/profile' }
     ];
 

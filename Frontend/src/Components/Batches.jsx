@@ -29,7 +29,7 @@ const handleAddBatch = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-gray-900 text-white p-6 pb-24">
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Batches</h1>
       </header>

@@ -202,6 +202,103 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
+// Get batch details with associated notes
+app.get("/api/batches/details/:batchId", async (req, res) => {
+  try {
+    const batchId = req.params.batchId;
+    const query = `
+      SELECT b.BatchID, b.BatchName, n.NoteID, n.Title, n.Content
+      FROM Batches b
+      LEFT JOIN Notes n ON b.BatchID = n.BatchID
+      WHERE b.BatchID = ?
+    `;
+    const results = await dbQuery(query, [batchId]);
+    
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Batch not found' });
+    }
+    
+    const batch = {
+      BatchID: results[0].BatchID,
+      BatchName: results[0].BatchName,
+      Notes: results.map(row => ({
+        NoteID: row.NoteID,
+        Title: row.Title,
+        Content: row.Content
+      })).filter(note => note.NoteID !== null)
+    };
+    
+    res.json(batch);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching batch details");
+  }
+});
+
+// Get note details
+app.get("/api/notes/:noteId", async (req, res) => {
+  try {
+    const noteId = req.params.noteId;
+    const query = "SELECT * FROM Notes WHERE NoteID = ?";
+    const results = await dbQuery(query, [noteId]);
+    
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+    
+    res.json(results[0]);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching note details");
+  }
+});
+
+// Create a new note
+app.post("/api/notes", async (req, res) => {
+  try {
+    const { BatchID, Title, Content } = req.body;
+    const query = "INSERT INTO Notes (BatchID, Title, Content) VALUES (?, ?, ?)";
+    const result = await dbQuery(query, [BatchID, Title, Content]);
+    
+    const newNote = {
+      NoteID: result.insertId,
+      BatchID,
+      Title,
+      Content
+    };
+    
+    res.status(201).json(newNote);
+  } catch (err) {
+    handleErrors(res, err, "Error creating note");
+  }
+});
+
+// Update an existing note
+app.put("/api/notes/:noteId", async (req, res) => {
+  try {
+    const noteId = req.params.noteId;
+    const { Title, Content } = req.body;
+    const query = "UPDATE Notes SET Title = ?, Content = ? WHERE NoteID = ?";
+    await dbQuery(query, [Title, Content, noteId]);
+    
+    const updatedNote = { NoteID: noteId, Title, Content };
+    res.json(updatedNote);
+  } catch (err) {
+    handleErrors(res, err, "Error updating note");
+  }
+});
+
+// Delete a note
+app.delete("/api/notes/:noteId", async (req, res) => {
+  try {
+    const noteId = req.params.noteId;
+    const query = "DELETE FROM Notes WHERE NoteID = ?";
+    await dbQuery(query, [noteId]);
+    
+    res.json({ message: 'Note deleted successfully' });
+  } catch (err) {
+    handleErrors(res, err, "Error deleting note");
+  }
+});
+
 // Add a new user
 app.post("/api/users", async (req, res) => {
   try {

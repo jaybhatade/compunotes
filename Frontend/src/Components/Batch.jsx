@@ -13,15 +13,13 @@ function BatchDetails() {
   useEffect(() => {
     const fetchBatchDetails = async () => {
       try {
-        console.log(`Fetching details for batch ID: ${batchId}`);
         const response = await axios.get(`/api/batches/details/${batchId}`);
-        console.log('Response data:', response.data);
         if (response.data.batch) {
           setBatch(response.data.batch);
+          setNotes(response.data.notes || []);
         } else {
           setError('Batch not found');
         }
-        setNotes(response.data.notes || []);
       } catch (error) {
         console.error('Error fetching batch details:', error);
         setError('Failed to load batch details. Please try again later.');
@@ -31,6 +29,10 @@ function BatchDetails() {
     fetchBatchDetails();
   }, [batchId]);
 
+  const handleNoteClick = (noteId) => {
+    navigate(`notes/${noteId}`);
+  };
+
   if (error) {
     return <div className="text-center text-red-500">{error}</div>;
   }
@@ -38,11 +40,6 @@ function BatchDetails() {
   if (!batch) {
     return <div className="text-center text-white">Loading...</div>;
   }
-
-  // Function to handle click on a note
-  const handleNoteClick = (noteId) => {
-    navigate(`notes/${noteId}`);
-  };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
