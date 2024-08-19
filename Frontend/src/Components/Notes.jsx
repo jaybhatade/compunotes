@@ -30,7 +30,7 @@ const NoteView = () => {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen p-8">
+    <div className="bg-gray-900 min-h-screen p-6 pb-24">
       <h1 className="text-3xl font-bold text-white mb-8">My Notes</h1>
       <div className="grid grid-cols-1 gap-6">
         {notes.map((note) => (

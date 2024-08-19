@@ -11,41 +11,53 @@ import BatchDetails from './Components/Batch';
 import BatchNote from './Pages/Admin/SubPages/BatchNote';
 import ManageUser from './Pages/Admin/SubPages/ManageUser';
 import LoginPage from './Pages/Auth/Login';
-import NavigationBar2 from './Components/Navbar2';
 import NavigationBar1 from './Components/Navbar1';
+import NavigationBar2 from './Components/Navbar2';
 
 // Define the AdminLayout component
-const AdminLayout = () => {
-  return (
-    <div>
-      <NavigationBar1 />
-      <main>
-        <Outlet />
-      </main>
-    </div>  
-  );
-};
+const AdminLayout = () => (
+  <div>
+    <NavigationBar1 />
+    <main>
+      <Outlet />
+    </main>
+  </div>
+);
 
-const StudentLayout = () => {
-  return (
-    <div>
-      <NavigationBar2 />
-      <main>
-        <Outlet />
-      </main>
-    </div>  
-  );
-};
+const StudentLayout = () => (
+  <div>
+    <NavigationBar2 />
+    <main>
+      <Outlet />
+    </main>
+  </div>
+);
 
-const MainLayout = () => {
-  return (
-    <div>
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  );
-};
+const MainLayout = () => (
+  <div>
+    <main>
+      <Outlet />
+    </main>
+  </div>
+);
+
+const NonavLayout = () => (
+  <div>
+    {/* No Navigation Bar Here */}
+    <main>
+      <Outlet />
+    </main>
+  </div>
+);
+
+const BatchesLayout = () => (
+  <div>
+    <NavigationBar1 />
+    <main>
+      <Outlet />
+    </main>
+  </div>
+);
 
 function App() {
   const router = createBrowserRouter([
@@ -55,29 +67,60 @@ function App() {
       children: [
         { index: true, element: <Home /> },
         { path: "login", element: <LoginPage /> },
-        { path: "a", element: <AdminLayout />, children: [
+      ],
+    },
+    {
+      path: "a",
+      element: <AdminLayout />,
+      children: [
         { index: true, path: "home", element: <HomePage /> },
-          { path: "add", element: <AddNotesPage /> },
-          { path: "database", element: <DatabasePage /> },
-          { path: "batches", element: <BatchesPage /> },
-          { path: "batches/new", element: <NewBatch /> },
-          { path: "batches/details/:batchId", element: <BatchDetails /> },
-          { path: "batches/details/:batchId/notes/:noteId", element: <BatchNote /> },
-          { path: "profile", element: <ProfilePage /> },
-          { path: "users", element: <ManageUser /> },
-        ]},
-
-        { path: "s", element: <StudentLayout />, children: [
-          { index: true, path: "home", element: <HomePage /> },
-            { path: "add", element: <AddNotesPage /> },
-            { path: "database", element: <DatabasePage /> },
-            { path: "batches", element: <BatchesPage /> },
-            { path: "batches/new", element: <NewBatch /> },
-            { path: "batches/details/:batchId", element: <BatchDetails /> },
-            { path: "batches/:batchId/notes/:noteId", element: <BatchNote /> },
-            { path: "profile", element: <ProfilePage /> },
-            { path: "users", element: <ManageUser /> },
-          ]},
+        { path: "add", element: <AddNotesPage /> },
+        { path: "database", element: <DatabasePage /> },
+        { path: "profile", element: <ProfilePage /> },
+        { path: "users", element: <ManageUser /> },
+        {
+          path: "batches",
+          element: <BatchesLayout />, // BatchesPage with Navbar
+          children: [
+            { index: true, element: <BatchesPage /> },
+            {
+              path: "",
+              element: <NonavLayout />, // Child routes without Navbar
+              children: [
+                { path: "new", element: <NewBatch /> },
+                { path: "details/:batchId", element: <BatchDetails /> },
+                { path: "details/:batchId/notes/:noteId", element: <BatchNote /> },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "s",
+      element: <StudentLayout />,
+      children: [
+        { index: true, path: "home", element: <HomePage /> },
+        { path: "add", element: <AddNotesPage /> },
+        { path: "database", element: <DatabasePage /> },
+        { path: "profile", element: <ProfilePage /> },
+        { path: "users", element: <ManageUser /> },
+        {
+          path: "batches",
+          element: <BatchesLayout />, // BatchesPage with Navbar
+          children: [
+            { index: true, element: <BatchesPage /> },
+            {
+              path: "",
+              element: <NonavLayout />, // Child routes without Navbar
+              children: [
+                { path: "new", element: <NewBatch /> },
+                { path: "details/:batchId", element: <BatchDetails /> },
+                { path: ":batchId/notes/:noteId", element: <BatchNote /> },
+              ],
+            },
+          ],
+        },
       ],
     },
   ]);

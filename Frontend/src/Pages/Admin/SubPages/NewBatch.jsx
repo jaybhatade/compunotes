@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IoAlertCircle, IoPencil, IoTrash, IoAdd } from 'react-icons/io5';
+import { IoAlertCircle, IoPencil, IoTrash, IoAdd, IoArrowBack } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 const BatchManagement = () => {
   const [batches, setBatches] = useState([]);
@@ -9,6 +10,7 @@ const BatchManagement = () => {
   const [error, setError] = useState('');
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [batchToDelete, setBatchToDelete] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBatches();
@@ -46,55 +48,55 @@ const BatchManagement = () => {
   };
 
   const handleEdit = (batch) => {
-    if (batch && batch.BatchID) {
-      setEditingBatch(batch);
-      setNewBatchName(batch.BatchName);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setError('Cannot edit batch: Invalid batch data.');
-    }
+    setEditingBatch(batch);
+    setNewBatchName(batch.BatchName);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = (batch) => {
-    if (batch && batch.BatchID) {
-      setBatchToDelete(batch);
-      setShowConfirmDelete(true);
-    } else {
-      setError('Cannot delete batch: Invalid batch data.');
-    }
+    setBatchToDelete(batch);
+    setShowConfirmDelete(true);
   };
 
   const confirmDelete = async () => {
-    if (batchToDelete && batchToDelete.BatchID) {
-      try {
-        await axios.delete(`/api/delete-batch/${batchToDelete.BatchID}`);
-        fetchBatches();
-        setBatchToDelete(null);
-        setShowConfirmDelete(false);
-      } catch (error) {
-        setError('Failed to delete batch.');
-      }
+    try {
+      await axios.delete(`/api/delete-batch/${batchToDelete.BatchID}`);
+      fetchBatches();
+      setBatchToDelete(null);
+      setShowConfirmDelete(false);
+    } catch (error) {
+      setError('Failed to delete batch.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8 pb-24">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Batch Management</h1>
+    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8 pb-24">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex items-center">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center text-white hover:text-gray-400 p-2 rounded-lg transition-colors"
+          >
+            <IoArrowBack className="mr-2 text-xl" />
+            <span className="inline">Back</span>
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit} className="mb-8 bg-gray-800 p-6 rounded-lg">
-          <div className="flex items-center mb-4 flex-wrap md:flex-nowrap gap-4">
+        <h1 className="text-3xl font-bold text-center">Batch Management</h1>
+
+        <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
             <input
               type="text"
               value={newBatchName}
               onChange={(e) => setNewBatchName(e.target.value)}
-              className="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               placeholder={editingBatch ? "Edit batch name" : "Enter new batch name"}
               required
             />
             <button
               type="submit"
-              className="px-6 py-3 w-full md:w-auto bg-blue-600 rounded-lg hover:bg-blue-700 flex justify-center items-center md:justify-start"
+              className="px-6 py-3 w-full md:w-auto bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex justify-center items-center"
             >
               <IoAdd className="mr-2" />
               {editingBatch ? 'Update' : 'Add'} Batch
@@ -108,30 +110,7 @@ const BatchManagement = () => {
           )}
         </form>
 
-        {showConfirmDelete && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
-            <div className="bg-gray-900 p-6 rounded-lg">
-              <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-              <p>Are you sure you want to delete this batch?</p>
-              <div className="mt-4 flex justify-end gap-4">
-                <button
-                  onClick={() => setShowConfirmDelete(false)}
-                  className="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-700"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmDelete}
-                  className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="bg-gray-800 rounded-lg overflow-hidden shadow-md">
           <table className="w-full">
             <thead className="bg-gray-700">
               <tr>
@@ -141,18 +120,18 @@ const BatchManagement = () => {
             </thead>
             <tbody>
               {batches.map((batch) => (
-                <tr key={batch.BatchID} className="border-t border-gray-700">
+                <tr key={batch.BatchID} className="border-t border-gray-700 hover:bg-gray-750 transition-colors">
                   <td className="px-6 py-4">{batch.BatchName}</td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right space-x-2">
                     <button
                       onClick={() => handleEdit(batch)}
-                      className="text-blue-400 hover:text-blue-300 mr-4"
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
                     >
                       <IoPencil />
                     </button>
                     <button
                       onClick={() => handleDelete(batch)}
-                      className="text-red-400 hover:text-red-300"
+                      className="text-red-400 hover:text-red-300 transition-colors"
                     >
                       <IoTrash />
                     </button>
@@ -162,6 +141,29 @@ const BatchManagement = () => {
             </tbody>
           </table>
         </div>
+
+        {showConfirmDelete && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 p-4">
+            <div className="bg-gray-900 p-6 rounded-lg shadow-lg text-center space-y-4">
+              <h2 className="text-lg font-semibold">Confirm Delete</h2>
+              <p>Are you sure you want to delete this batch?</p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setShowConfirmDelete(false)}
+                  className="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

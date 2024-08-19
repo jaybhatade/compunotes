@@ -271,20 +271,6 @@ app.post("/api/notes", async (req, res) => {
   }
 });
 
-// Update an existing note
-app.put("/api/notes/:noteId", async (req, res) => {
-  try {
-    const noteId = req.params.noteId;
-    const { Title, Content } = req.body;
-    const query = "UPDATE Notes SET Title = ?, Content = ? WHERE NoteID = ?";
-    await dbQuery(query, [Title, Content, noteId]);
-    
-    const updatedNote = { NoteID: noteId, Title, Content };
-    res.json(updatedNote);
-  } catch (err) {
-    handleErrors(res, err, "Error updating note");
-  }
-});
 
 // Delete a note
 app.delete("/api/notes/:noteId", async (req, res) => {

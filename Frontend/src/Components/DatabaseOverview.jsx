@@ -42,7 +42,7 @@ const DatabaseOverview = () => {
   if (error) return <div className="text-center text-red-400">{error}</div>;
 
   return (
-    <div className="container mx-auto p-4 h-screen w-full bg-gray-900">
+    <div className="container mx-auto pt-8 px-4 h-screen w-full bg-gray-900">
       <h1 className="text-3xl font-bold mb-6 text-white">Database Overview</h1>
       
       {/* Notes Section */}
@@ -105,6 +105,9 @@ const DatabaseOverview = () => {
             </li>
           ))}
         </ul>
+      </div>
+      <div className='w-full h-24'>
+
       </div>
     </div>
   );

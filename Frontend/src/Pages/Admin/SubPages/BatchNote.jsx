@@ -10,6 +10,12 @@ function BatchNote() {
   const [note, setNote] = useState(null);
   const [error, setError] = useState(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedContent, setEditedContent] = useState('');
+  const [editedVideoLink, setEditedVideoLink] = useState('');
+  const [editedCategory, setEditedCategory] = useState('');
+  const [editedBatchId, setEditedBatchId] = useState('');
 
   useEffect(() => {
     const fetchNoteDetails = async () => {
@@ -17,6 +23,11 @@ function BatchNote() {
         const response = await axios.get(`/api/notes/${noteId}`);
         if (response.data && response.data.NoteID) {
           setNote(response.data);
+          setEditedTitle(response.data.Title || '');
+          setEditedContent(response.data.Content || '');
+          setEditedVideoLink(response.data.VideoLink || '');
+          setEditedCategory(response.data.Category || '');
+          setEditedBatchId(response.data.BatchID || '');
         } else {
           setError('Note not found');
         }
@@ -32,8 +43,38 @@ function BatchNote() {
     navigate(-1); // Go back to the previous page
   };
 
-  const handleEdit = () => {
-    // Implement edit functionality
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const updatedNote = {
+        Title: editedTitle,
+        Content: editedContent,
+        VideoLink: editedVideoLink,
+        Category: editedCategory,
+        BatchID: editedBatchId,
+      };
+      const response = await axios.put(`/api/notes/${noteId}`, updatedNote);
+
+      if (response.status === 200) {
+        setNote({
+          ...note,
+          Title: editedTitle,
+          Content: editedContent,
+          VideoLink: editedVideoLink,
+          Category: editedCategory,
+          BatchID: editedBatchId,
+        });
+        setIsEditing(false);
+      } else {
+        setError('Failed to update note. Please try again later.');
+      }
+    } catch (error) {
+      setError('Failed to update note. Please try again later.');
+    }
   };
 
   const handleDelete = async () => {
@@ -74,9 +115,9 @@ function BatchNote() {
           <AiOutlineArrowLeft className="mr-2" /> Back
         </button>
         <div className="flex space-x-4">
-          <button onClick={handleEdit} className="text-gray-400 hover:text-white flex items-center">
-            <AiOutlineEdit className="mr-2" /> Edit
-          </button>
+          {/* <button onClick={handleEditToggle} className="text-gray-400 hover:text-white flex items-center">
+            <AiOutlineEdit className="mr-2" /> {isEditing ? 'Cancel' : 'Edit'}
+          </button> */}
           <button
             onClick={() => setShowDeletePopup(true)}
             className="text-gray-400 hover:text-red-500 flex items-center"
@@ -86,37 +127,83 @@ function BatchNote() {
         </div>
       </div>
 
-      <h1 className="text-3xl font-bold text-white mb-8">{note.Title}</h1>
+      {isEditing ? (
+        <form onSubmit={handleEditSubmit} className="mb-4">
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            className="w-full bg-gray-800 text-white p-2 mb-4 rounded-md"
+            placeholder="Enter title"
+            required
+          />
+          <textarea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            className="w-full bg-gray-800 text-white p-2 mb-4 rounded-md"
+            placeholder="Enter content"
+            rows="10"
+            required
+          />
+          <input
+            type="text"
+            value={editedVideoLink}
+            onChange={(e) => setEditedVideoLink(e.target.value)}
+            className="w-full bg-gray-800 text-white p-2 mb-4 rounded-md"
+            placeholder="Enter YouTube video link"
+          />
+          <input
+            type="text"
+            value={editedCategory}
+            onChange={(e) => setEditedCategory(e.target.value)}
+            className="w-full bg-gray-800 text-white p-2 mb-4 rounded-md"
+            placeholder="Enter category"
+          />
+          <input
+            type="text"
+            value={editedBatchId}
+            onChange={(e) => setEditedBatchId(e.target.value)}
+            className="w-full bg-gray-800 text-white p-2 mb-4 rounded-md"
+            placeholder="Enter batch ID"
+          />
+          <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500">
+            Save Changes
+          </button>
+        </form>
+      ) : (
+        <>
+          <h1 className="text-3xl font-bold text-white mb-4 mt-8">{note.Title}</h1>
+          <div className="mb-4">
+            <pre className="bg-gray-800 text-sm md:text-lg text-white overflow-x-auto p-4 rounded-md whitespace-pre-wrap">
+              {note.Content}
+            </pre>
+          </div>
 
-      <div className="mb-4">
-        <pre className="bg-gray-800 text-sm md:text-lg text-white overflow-x-auto p-4 rounded-md whitespace-pre-wrap">
-          {note.Content}
-        </pre>
-      </div>
+          {note.VideoLink === null && (
+            <p className="text-red-500">No video link available.</p>
+          )}
 
-      {note.VideoLink === null && (
-        <p className="text-red-500">No video link available.</p>
-      )}
+          {note.VideoLink && getYouTubeId(note.VideoLink) && (
+            <div className="relative mb-4" style={{ paddingBottom: '56.25%', height: 0 }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${getYouTubeId(note.VideoLink)}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute top-0 left-0 w-full h-full rounded-lg"
+              ></iframe>
+            </div>
+          )}
 
-      {note.VideoLink && getYouTubeId(note.VideoLink) && (
-        <div className="relative mb-4" style={{ paddingBottom: '56.25%', height: 0 }}>
-          <iframe
-            src={`https://www.youtube.com/embed/${getYouTubeId(note.VideoLink)}`}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="absolute top-0 left-0 w-full h-full rounded-lg"
-          ></iframe>
-        </div>
-      )}
-
-      <p className="text-gray-500 text-sm mt-4">
-        Created: {new Date(note.CreatedAt).toLocaleString()}
-      </p>
-      {note.UpdatedAt && (
-        <p className="text-gray-500 text-sm">
-          Updated: {new Date(note.UpdatedAt).toLocaleString()}
-        </p>
+          <p className="text-gray-500 text-sm mt-4">
+            Created: {new Date(note.CreatedAt).toLocaleString()}
+          </p>
+          {note.UpdatedAt && (
+            <p className="text-gray-500 text-sm">
+              Updated: {new Date(note.UpdatedAt).toLocaleString()}
+            </p>
+          )}
+        </>
       )}
 
       {/* Delete Confirmation Popup */}
