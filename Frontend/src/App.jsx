@@ -13,6 +13,11 @@ import ManageUser from './Pages/Admin/SubPages/ManageUser';
 import LoginPage from './Pages/Auth/Login';
 import NavigationBar1 from './Components/Navbar1';
 import NavigationBar2 from './Components/Navbar2';
+import HomePage2 from './Pages/Student/Pages/HomePage2';
+import BatchesPage2 from './Pages/Student/Pages/BatchesPage2';
+import SearchPage from './Pages/Student/Pages/SearchPage';
+import NotesPage from './Pages/Student/Pages/NotesPage';
+import ProfilePage2 from './Pages/Student/Pages/ProfilePage2';
 
 // Define the AdminLayout component
 const AdminLayout = () => (
@@ -52,7 +57,6 @@ const NonavLayout = () => (
 
 const BatchesLayout = () => (
   <div>
-    <NavigationBar1 />
     <main>
       <Outlet />
     </main>
@@ -73,7 +77,7 @@ function App() {
       path: "a",
       element: <AdminLayout />,
       children: [
-        { index: true, path: "home", element: <HomePage /> },
+        { index: true, path: "home", element: <HomePage/> },
         { path: "add", element: <AddNotesPage /> },
         { path: "database", element: <DatabasePage /> },
         { path: "profile", element: <ProfilePage /> },
@@ -100,16 +104,16 @@ function App() {
       path: "s",
       element: <StudentLayout />,
       children: [
-        { index: true, path: "home", element: <HomePage /> },
-        { path: "add", element: <AddNotesPage /> },
-        { path: "database", element: <DatabasePage /> },
-        { path: "profile", element: <ProfilePage /> },
+        { index: true, path: "home", element: <HomePage2 /> },
+        { path: "search", element: <SearchPage /> },
+        { path: "notes", element: <NotesPage/> },
+        { path: "profile", element: <ProfilePage2 /> },
         { path: "users", element: <ManageUser /> },
         {
           path: "batches",
           element: <BatchesLayout />, // BatchesPage with Navbar
           children: [
-            { index: true, element: <BatchesPage /> },
+            { index: true, element: <BatchesPage2 /> },
             {
               path: "",
               element: <NonavLayout />, // Child routes without Navbar

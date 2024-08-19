@@ -8,7 +8,7 @@ const NavigationBar2 = () => {
         { name: 'Home', icon: HiHome, path: '/s/home' },
         { name: 'Batches', icon: HiUserGroup, path: '/s/batches' },
         { name: 'Search', icon: HiOutlineSearch, path: '/s/search' },
-        { name: 'Notes', icon: CgNotes, path: '/s/database' },
+        { name: 'Notes', icon: CgNotes, path: '/s/notes' },
         { name: 'Profile', icon: HiUser, path: '/s/profile' }
     ];
 
