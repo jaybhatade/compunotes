@@ -370,6 +370,103 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+
+  // Get all batches
+  app.get("/api/get-batches", async (req, res) => {
+    try {
+      const [rows] = await pool.query("SELECT * FROM Batches");
+      res.json(rows);
+    } catch (err) {
+      handleErrors(res, err, "Error fetching batches");
+    }
+  });
+
+  // Create a new batch
+  app.post("/api/create-batch", async (req, res) => {
+    try {
+      const { BatchName } = req.body;
+      if (!BatchName) {
+        return res.status(400).json({ error: "BatchName is required" });
+      }
+
+      const [existingBatch] = await pool.query("SELECT * FROM Batches WHERE BatchName = ?", [BatchName]);
+      
+      if (existingBatch.length > 0) {
+        return res.status(409).json({ error: "Batch already exists" });
+      }
+      
+      const [result] = await pool.query("INSERT INTO Batches (BatchName) VALUES (?)", [BatchName]);
+      res.status(201).json({ BatchID: result.insertId, BatchName });
+    } catch (err) {
+      handleErrors(res, err, "Error creating batch");
+    }
+  });
+
+  // Update a batch
+  app.put("/api/update-batch/:BatchID", async (req, res) => {
+    try {
+      const { BatchID } = req.params;
+      const { BatchName } = req.body;
+
+      if (!BatchName) {
+        return res.status(400).json({ error: "BatchName is required" });
+      }
+      
+      const [existingBatch] = await pool.query("SELECT * FROM Batches WHERE BatchName = ? AND BatchID != ?", [BatchName, BatchID]);
+      
+      if (existingBatch.length > 0) {
+        return res.status(409).json({ error: "Batch name already in use" });
+      }
+      
+      const [result] = await pool.query("UPDATE Batches SET BatchName = ? WHERE BatchID = ?", [BatchName, BatchID]);
+      
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Batch not found" });
+      }
+      
+      res.json({ message: "Batch updated successfully", BatchID, BatchName });
+    } catch (err) {
+      handleErrors(res, err, "Error updating batch");
+    }
+  });
+
+// Delete a batch
+app.delete("/api/delete-batch/:BatchID", async (req, res) => {
+  try {
+    const { BatchID } = req.params;
+
+    // Start a transaction
+    await pool.query('START TRANSACTION');
+
+    // Delete related records in BatchMembers
+    const [batchMembersResult] = await pool.query("DELETE FROM BatchMembers WHERE BatchID = ?", [BatchID]);
+
+    if (batchMembersResult.affectedRows === 0) {
+      // Optionally, handle cases where there are no related records
+      console.log('No related BatchMembers found for BatchID:', BatchID);
+    }
+
+    // Delete the batch from Batches
+    const [batchResult] = await pool.query("DELETE FROM Batches WHERE BatchID = ?", [BatchID]);
+
+    if (batchResult.affectedRows === 0) {
+      // If no rows were affected, the batch was not found
+      return res.status(404).json({ error: "Batch not found" });
+    }
+
+    // Commit the transaction
+    await pool.query('COMMIT');
+
+    res.json({ message: "Batch and related records deleted successfully", BatchID });
+  } catch (err) {
+    // Rollback the transaction in case of error
+    await pool.query('ROLLBACK');
+    handleErrors(res, err, "Error deleting batch");
+  }
+});
+
+
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
