@@ -333,26 +333,51 @@ app.delete("/api/users/:id", async (req, res) => {
   }
 });
 
-app.post("/api/login", async (req, res) => {
+// Login endpoint
+app.post('/api/login', async (req, res) => {
   try {
     const { Username, Password } = req.body;
-    const users = await dbQuery("SELECT * FROM Users WHERE Username = ?", [
-      Username,
-    ]);
+    const users = await dbQuery('SELECT * FROM Users WHERE Username = ?', [Username]);
 
     if (users.length > 0) {
       const user = users[0];
-      if (Password === user.Password) {
-        // Direct comparison without hashing
+      if (Password === user.Password) { // Direct comparison without hashing
+        // Store user role in session storage or in-memory storage as needed
         res.json({ Role: user.Role });
       } else {
-        res.status(401).json({ error: "Invalid Username or Password" });
+        res.status(401).json({ error: 'Invalid Username or Password' });
       }
     } else {
-      res.status(401).json({ error: "Invalid Username or Password" });
+      res.status(401).json({ error: 'Invalid Username or Password' });
     }
   } catch (err) {
-    handleErrors(res, err, "Error during login");
+    handleErrors(res, err, 'Error during login');
+  }
+});
+
+// Logout endpoint
+app.post('/api/logout', (req, res) => {
+  try {
+    // Implement session clearing logic or token invalidation if applicable
+    res.json({ message: 'Logged out successfully' });
+  } catch (err) {
+    handleErrors(res, err, 'Error during logout');
+  }
+});
+
+// Fetch user details endpoint
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const users = await dbQuery('SELECT * FROM Users WHERE UserID = ?', [id]);
+
+    if (users.length > 0) {
+      res.json(users[0]);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (err) {
+    handleErrors(res, err, 'Error fetching user details');
   }
 });
 

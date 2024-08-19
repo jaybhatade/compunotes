@@ -23,7 +23,9 @@ const HomePage2 = () => {
           />
           <HiSearch className="absolute left-2.5 top-3.5 text-gray-500 transition-colors duration-200" />
         </div>  
-        
+        <section>
+
+        </section>
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Recent Notes</h2>

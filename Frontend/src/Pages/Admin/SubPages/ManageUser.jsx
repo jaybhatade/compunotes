@@ -65,11 +65,11 @@ const ManageUser = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 pb-24">
       <h1 className="text-3xl font-bold mb-8 text-center text-blue-500">Manage Users</h1>
 
       {/* Add User Form */}
-      <form onSubmit={handleSubmit} className="bg-gray-900 p-6 rounded-lg shadow-lg mb-8">
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input 
             type="text" 
@@ -77,7 +77,7 @@ const ManageUser = () => {
             value={formData.Username} 
             onChange={handleInputChange} 
             placeholder="Username" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required 
           />
           <input 
@@ -86,7 +86,7 @@ const ManageUser = () => {
             value={formData.Password} 
             onChange={handleInputChange} 
             placeholder="Password" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required 
           />
           <input 
@@ -95,7 +95,7 @@ const ManageUser = () => {
             value={formData.PhoneNumber} 
             onChange={handleInputChange} 
             placeholder="Phone Number" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
           />
           <input 
             type="email" 
@@ -103,7 +103,7 @@ const ManageUser = () => {
             value={formData.Email} 
             onChange={handleInputChange} 
             placeholder="Email" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required 
           />
           <input 
@@ -112,7 +112,7 @@ const ManageUser = () => {
             value={formData.FirstName} 
             onChange={handleInputChange} 
             placeholder="First Name" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
           />
           <input 
             type="text" 
@@ -120,13 +120,13 @@ const ManageUser = () => {
             value={formData.LastName} 
             onChange={handleInputChange} 
             placeholder="Last Name" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
           />
           <select 
             name="Role" 
             value={formData.Role} 
             onChange={handleInputChange} 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           >
             <option value="student">Student</option>
@@ -139,7 +139,7 @@ const ManageUser = () => {
             value={formData.ProfileIcon} 
             onChange={handleInputChange} 
             placeholder="Profile Icon URL" 
-            className="input-field bg-gray-800 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+            className="input-field bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
           />
         </div>
         <button 
@@ -151,8 +151,8 @@ const ManageUser = () => {
       </form>
 
       {/* List of Users */}
-      <div className="overflow-x-auto">
-        <table className="w-full bg-gray-800 text-white rounded-lg shadow-lg">
+      <div className="overflow-x-auto rounded-lg shadow-lg">
+        <table className="w-full bg-gray-800 text-white ">
           <thead>
             <tr className="text-left bg-gray-700">
               <th className="p-3">Username</th>

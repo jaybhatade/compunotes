@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import Home from './home';
 import HomePage from './Pages/Admin/pages/HomePage';
 import ProfilePage from './Pages/Admin/pages/ProfilePage';
@@ -63,6 +63,18 @@ const BatchesLayout = () => (
   </div>
 );
 
+// Authenticated Route Component
+const ProtectedRoute = ({ element, roles }) => {
+  const userRole = sessionStorage.getItem('userRole');
+  if (!userRole) {
+    return <Navigate to="/login" />;
+  }
+  if (roles && !roles.includes(userRole)) {
+    return <Navigate to="/" />;
+  }
+  return element;
+};
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -77,23 +89,23 @@ function App() {
       path: "a",
       element: <AdminLayout />,
       children: [
-        { index: true, path: "home", element: <HomePage/> },
-        { path: "add", element: <AddNotesPage /> },
-        { path: "database", element: <DatabasePage /> },
-        { path: "profile", element: <ProfilePage /> },
-        { path: "users", element: <ManageUser /> },
+        { index: true, path: "home", element: <ProtectedRoute element={<HomePage />} roles={['admin', 'teacher']} /> },
+        { path: "add", element: <ProtectedRoute element={<AddNotesPage />} roles={['admin', 'teacher']} /> },
+        { path: "database", element: <ProtectedRoute element={<DatabasePage />} roles={['admin']} /> },
+        { path: "profile", element: <ProtectedRoute element={<ProfilePage />} roles={['admin', 'teacher']} /> },
+        { path: "users", element: <ProtectedRoute element={<ManageUser />} roles={['admin']} /> },
         {
           path: "batches",
           element: <BatchesLayout />, // BatchesPage with Navbar
           children: [
-            { index: true, element: <BatchesPage /> },
+            { index: true, element: <ProtectedRoute element={<BatchesPage />} roles={['admin', 'teacher']} /> },
             {
               path: "",
               element: <NonavLayout />, // Child routes without Navbar
               children: [
-                { path: "new", element: <NewBatch /> },
-                { path: "details/:batchId", element: <BatchDetails /> },
-                { path: "details/:batchId/notes/:noteId", element: <BatchNote /> },
+                { path: "new", element: <ProtectedRoute element={<NewBatch />} roles={['admin', 'teacher']} /> },
+                { path: "details/:batchId", element: <ProtectedRoute element={<BatchDetails />} roles={['admin', 'teacher']} /> },
+                { path: "details/:batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote />} roles={['admin', 'teacher']} /> },
               ],
             },
           ],
@@ -104,23 +116,22 @@ function App() {
       path: "s",
       element: <StudentLayout />,
       children: [
-        { index: true, path: "home", element: <HomePage2 /> },
-        { path: "search", element: <SearchPage /> },
-        { path: "notes", element: <NotesPage/> },
-        { path: "profile", element: <ProfilePage2 /> },
-        { path: "users", element: <ManageUser /> },
+        { index: true, path: "home", element: <ProtectedRoute element={<HomePage2 />} roles={['student']} /> },
+        { path: "search", element: <ProtectedRoute element={<SearchPage />} roles={['student']} /> },
+        { path: "notes", element: <ProtectedRoute element={<NotesPage />} roles={['student']} /> },
+        { path: "profile", element: <ProtectedRoute element={<ProfilePage2 />} roles={['student']} /> },
         {
           path: "batches",
           element: <BatchesLayout />, // BatchesPage with Navbar
           children: [
-            { index: true, element: <BatchesPage2 /> },
+            { index: true, element: <ProtectedRoute element={<BatchesPage2 />} roles={['student']} /> },
             {
               path: "",
               element: <NonavLayout />, // Child routes without Navbar
               children: [
-                { path: "new", element: <NewBatch /> },
-                { path: "details/:batchId", element: <BatchDetails /> },
-                { path: ":batchId/notes/:noteId", element: <BatchNote /> },
+                { path: "new", element: <ProtectedRoute element={<NewBatch />} roles={['student']} /> },
+                { path: "details/:batchId", element: <ProtectedRoute element={<BatchDetails />} roles={['student']} /> },
+                { path: ":batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote />} roles={['student']} /> },
               ],
             },
           ],

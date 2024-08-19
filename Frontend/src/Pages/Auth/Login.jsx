@@ -21,6 +21,9 @@ const LoginPage = () => {
       const response = await axios.post('/api/login', formData);
       const { Role } = response.data;
 
+      // Store user role in session storage
+      sessionStorage.setItem('userRole', Role);
+
       if (Role === 'teacher' || Role === 'admin') {
         navigate('/a/home');
       } else if (Role === 'student') {
@@ -33,44 +36,46 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-8">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-center text-blue-500">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-950 p-6 sm:p-8">
+      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 space-y-6">
+        <h2 className="text-4xl font-extrabold text-center text-blue-400">Login</h2>
 
         {error && (
-          <div className="text-red-500 text-center">{error}</div>
+          <div className="text-red-400 text-center text-sm">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <FaUserAlt className="absolute left-3 top-4 text-gray-500" />
+            <FaUserAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
               name="Username" 
               value={formData.Username} 
               onChange={handleInputChange} 
               placeholder="Username" 
-              className="w-full pl-10 p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-12 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
               required 
+              aria-label="Username"
             />
           </div>
 
           <div className="relative">
-            <FaLock className="absolute left-3 top-3 text-gray-500" />
+            <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input 
               type="password" 
               name="Password" 
               value={formData.Password} 
               onChange={handleInputChange} 
               placeholder="Password" 
-              className="w-full pl-10 p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-12 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
               required 
+              aria-label="Password"
             />
           </div>
 
           <button 
             type="submit" 
-            className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg mt-6 hover:bg-blue-700 transition-all duration-200"
+            className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg mt-6 hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
           >
             Login
           </button>
