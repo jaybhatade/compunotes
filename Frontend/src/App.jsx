@@ -18,6 +18,7 @@ import BatchesPage2 from './Pages/Student/Pages/BatchesPage2';
 import SearchPage from './Pages/Student/Pages/SearchPage';
 import NotesPage from './Pages/Student/Pages/NotesPage';
 import ProfilePage2 from './Pages/Student/Pages/ProfilePage2';
+import BatchManagement from './Pages/Admin/SubPages/ManageMembers';
 
 // Define the AdminLayout component
 const AdminLayout = () => (
@@ -105,6 +106,7 @@ function App() {
               children: [
                 { path: "new", element: <ProtectedRoute element={<NewBatch />} roles={['admin', 'teacher']} /> },
                 { path: "details/:batchId", element: <ProtectedRoute element={<BatchDetails />} roles={['admin', 'teacher']} /> },
+                { path: "details/members", element: <ProtectedRoute element={<BatchManagement />} roles={['admin', 'teacher']} /> },
                 { path: "details/:batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote />} roles={['admin', 'teacher']} /> },
               ],
             },
