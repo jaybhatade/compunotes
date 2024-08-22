@@ -49,7 +49,7 @@ const handleAddBatch = () => {
         className="flex items-center justify-center mt-8 px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700"
       >
         <AiFillPlusCircle size={24} className="mr-2" />
-        Manage Notes
+        Manage Batches
       </button>
     </div>
   );

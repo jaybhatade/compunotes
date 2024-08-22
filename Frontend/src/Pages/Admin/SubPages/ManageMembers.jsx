@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
-const BatchManagement = () => {
+const ManageMembers = () => {
   const { BatchID } = useParams();
-  const navigate = useNavigate();
   const [batches, setBatches] = useState([]);
   const [students, setStudents] = useState([]);
   const [availableStudents, setAvailableStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState('');
+  const [selectedBatch, setSelectedBatch] = useState(BatchID);
 
   useEffect(() => {
     fetchBatches();
     fetchStudentsInBatch();
     fetchAvailableStudents();
-  }, [BatchID]);
+  }, [selectedBatch]);
 
   const fetchBatches = async () => {
     try {
-      const response = await axios.get('/api/v1/batches');
+      const response = await axios.get('/api/v1/batches/get-all-batches');
       setBatches(response.data);
     } catch (error) {
       console.error('Error fetching batches:', error);
@@ -28,7 +28,7 @@ const BatchManagement = () => {
 
   const fetchStudentsInBatch = async () => {
     try {
-      const response = await axios.get(`/api/v1/batches/${BatchID}/students`);
+      const response = await axios.get(`/api/v1/batches/${selectedBatch}/get-batch-students`);
       setStudents(response.data);
     } catch (error) {
       console.error('Error fetching students in batch:', error);
@@ -37,7 +37,7 @@ const BatchManagement = () => {
 
   const fetchAvailableStudents = async () => {
     try {
-      const response = await axios.get('/api/v1/users/students');
+      const response = await axios.get('/api/v1/users/get-all-students');
       setAvailableStudents(response.data);
     } catch (error) {
       console.error('Error fetching available students:', error);
@@ -47,7 +47,7 @@ const BatchManagement = () => {
   const handleAddStudent = async () => {
     try {
       if (selectedStudent) {
-        await axios.post(`/api/v1/batches/${BatchID}/add-student`, { UserID: selectedStudent });
+        await axios.post(`/api/v1/batches/${selectedBatch}/add-student-to-batch`, { UserID: selectedStudent });
         fetchStudentsInBatch();
       }
     } catch (error) {
@@ -57,7 +57,7 @@ const BatchManagement = () => {
 
   const handleRemoveStudent = async (UserID) => {
     try {
-      await axios.delete(`/api/v1/batches/${BatchID}/remove-student/${UserID}`);
+      await axios.delete(`/api/v1/batches/${selectedBatch}/remove-student-from-batch/${UserID}`);
       fetchStudentsInBatch();
     } catch (error) {
       console.error('Error removing student from batch:', error);
@@ -69,8 +69,8 @@ const BatchManagement = () => {
       <div className="mb-4">
         <h1 className="text-2xl font-semibold">Batch Management</h1>
         <select
-          value={BatchID}
-          onChange={(e) => navigate(`/batches/${e.target.value}`)}
+          value={selectedBatch}
+          onChange={(e) => setSelectedBatch(e.target.value)}
           className="mt-2 p-2 bg-gray-700 border border-gray-600 rounded"
         >
           {batches.map(batch => (
@@ -125,4 +125,4 @@ const BatchManagement = () => {
   );
 };
 
-export default BatchManagement;
+export default ManageMembers;

@@ -477,6 +477,80 @@ app.delete("/api/delete-batch/:BatchID", async (req, res) => {
 });
 
 
+// Get all batches
+app.get("/api/v1/batches/get-all-batches", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM Batches");
+    res.json(rows);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching batches");
+  }
+});
+
+
+// Get students in a specific batch
+app.get("/api/v1/batches/:BatchID/get-batch-students", async (req, res) => {
+  const { BatchID } = req.params;
+  try {
+    const [rows] = await pool.query(`
+      SELECT u.UserID, u.FirstName, u.LastName
+      FROM Users u
+      JOIN BatchMembers bm ON u.UserID = bm.UserID
+      WHERE bm.BatchID = ? AND bm.Role = 'student'
+    `, [BatchID]);
+    res.json(rows);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching students in batch");
+  }
+});
+
+
+// Add a student to a batch
+app.post("/api/v1/batches/:BatchID/add-student-to-batch", async (req, res) => {
+  const { BatchID } = req.params;
+  const { UserID } = req.body;
+  try {
+    await pool.query(`
+      INSERT INTO BatchMembers (UserID, BatchID, Role)
+      VALUES (?, ?, 'student')
+    `, [UserID, BatchID]);
+    res.status(201).json({ message: "Student added to batch" });
+  } catch (err) {
+    handleErrors(res, err, "Error adding student to batch");
+  }
+});
+
+
+// Remove a student from a batch
+app.delete("/api/v1/batches/:BatchID/remove-student-from-batch/:UserID", async (req, res) => {
+  const { BatchID, UserID } = req.params;
+  try {
+    await pool.query(`
+      DELETE FROM BatchMembers
+      WHERE BatchID = ? AND UserID = ? AND Role = 'student'
+    `, [BatchID, UserID]);
+    res.status(200).json({ message: "Student removed from batch" });
+  } catch (err) {
+    handleErrors(res, err, "Error removing student from batch");
+  }
+});
+
+
+// Get all users with the role of 'student'
+app.get("/api/v1/users/get-all-students", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT UserID, FirstName, LastName
+      FROM Users
+      WHERE Role = 'student'
+    `);
+    res.json(rows);
+  } catch (err) {
+    handleErrors(res, err, "Error fetching students");
+  }
+});
+
+
 
 // Global error handler
 app.use((err, req, res, next) => {
