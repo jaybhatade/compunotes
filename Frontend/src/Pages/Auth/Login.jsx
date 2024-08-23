@@ -18,15 +18,18 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/login', formData);
-      const { Role } = response.data;
+      const response = await axios.post('/api/login', formData, {
+        withCredentials: true
+      });
+      const { user } = response.data;
 
-      // Store user role in session storage
-      sessionStorage.setItem('userRole', Role);
+      // Store user role and username in session storage
+      sessionStorage.setItem('userRole', user.Role);
+      sessionStorage.setItem('username', user.Username);
 
-      if (Role === 'teacher' || Role === 'admin') {
+      if (user.Role === 'teacher' || user.Role === 'admin') {
         navigate('/a/home');
-      } else if (Role === 'student') {
+      } else if (user.Role === 'student') {
         navigate('/s/home');
       }
     } catch (error) {
@@ -36,49 +39,51 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-950 p-6 sm:p-8">
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 space-y-6">
-        <h2 className="text-4xl font-extrabold text-center text-blue-400">Login</h2>
-
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg">
+        <h3 className="text-2xl font-bold text-center">Login</h3>
         {error && (
-          <div className="text-red-400 text-center text-sm">{error}</div>
+          <div className="mt-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg">
+            {error}
+          </div>
         )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <FaUserAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input 
-              type="text" 
-              name="Username" 
-              value={formData.Username} 
-              onChange={handleInputChange} 
-              placeholder="Username" 
-              className="w-full pl-12 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-              required 
-              aria-label="Username"
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="mt-4">
+            <div className="flex items-center">
+              <FaUserAlt className="text-gray-400 mr-2" />
+              <input
+                type="text"
+                placeholder="Username"
+                name="Username"
+                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                value={formData.Username}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
           </div>
-
-          <div className="relative">
-            <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input 
-              type="password" 
-              name="Password" 
-              value={formData.Password} 
-              onChange={handleInputChange} 
-              placeholder="Password" 
-              className="w-full pl-12 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-              required 
-              aria-label="Password"
-            />
+          <div className="mt-4">
+            <div className="flex items-center">
+              <FaLock className="text-gray-400 mr-2" />
+              <input
+                type="password"
+                placeholder="Password"
+                name="Password"
+                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                value={formData.Password}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
           </div>
-
-          <button 
-            type="submit" 
-            className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg mt-6 hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
-          >
-            Login
-          </button>
+          <div className="flex items-baseline justify-center">
+            <button
+              type="submit"
+              className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-colors duration-300"
+            >
+              Login
+            </button>
+          </div>
         </form>
       </div>
     </div>

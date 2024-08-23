@@ -3,11 +3,26 @@ const mysql = require("mysql2");
 const cors = require("cors");
 require("dotenv").config();
 const path = require("path");
+const session = require('express-session');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // or your frontend URL
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist")));
+
+// Set up session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -333,55 +348,6 @@ app.delete("/api/users/:id", async (req, res) => {
   }
 });
 
-// Login endpoint
-app.post('/api/login', async (req, res) => {
-  try {
-    const { Username, Password } = req.body;
-    const users = await dbQuery('SELECT * FROM Users WHERE Username = ?', [Username]);
-
-    if (users.length > 0) {
-      const user = users[0];
-      if (Password === user.Password) { // Direct comparison without hashing
-        // Store user role in session storage or in-memory storage as needed
-        res.json({ Role: user.Role });
-      } else {
-        res.status(401).json({ error: 'Invalid Username or Password' });
-      }
-    } else {
-      res.status(401).json({ error: 'Invalid Username or Password' });
-    }
-  } catch (err) {
-    handleErrors(res, err, 'Error during login');
-  }
-});
-
-// Logout endpoint
-app.post('/api/logout', (req, res) => {
-  try {
-    // Implement session clearing logic or token invalidation if applicable
-    res.json({ message: 'Logged out successfully' });
-  } catch (err) {
-    handleErrors(res, err, 'Error during logout');
-  }
-});
-
-// Fetch user details endpoint
-app.get('/api/users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const users = await dbQuery('SELECT * FROM Users WHERE UserID = ?', [id]);
-
-    if (users.length > 0) {
-      res.json(users[0]);
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
-  } catch (err) {
-    handleErrors(res, err, 'Error fetching user details');
-  }
-});
-
-
   // Get all batches
   app.get("/api/get-batches", async (req, res) => {
     try {
@@ -550,6 +516,100 @@ app.get("/api/v1/users/get-all-students", async (req, res) => {
   }
 });
 
+// Updated Login endpoint
+app.post('/api/login', async (req, res) => {
+  try {
+    const { Username, Password } = req.body;
+    const users = await dbQuery('SELECT * FROM Users WHERE Username = ?', [Username]);
+
+    if (users.length > 0) {
+      const user = users[0];
+      if (Password === user.Password) { // Note: In production, use proper password hashing
+        // Store user data in session
+        req.session.user = {
+          UserID: user.UserID,
+          Username: user.Username,
+          Role: user.Role
+        };
+        res.json({ 
+          message: 'Login successful',
+          user: {
+            UserID: user.UserID,
+            Username: user.Username,
+            Role: user.Role
+          }
+        });
+      } else {
+        res.status(401).json({ error: 'Invalid Username or Password' });
+      }
+    } else {
+      res.status(401).json({ error: 'Invalid Username or Password' });
+    }
+  } catch (err) {
+    handleErrors(res, err, 'Error during login');
+  }
+});
+
+// Updated Logout endpoint
+app.post('/api/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      handleErrors(res, err, 'Error during logout');
+    } else {
+      res.clearCookie('connect.sid'); // Clear the session cookie
+      res.json({ message: 'Logged out successfully' });
+    }
+  });
+});
+
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+  if (req.session.user) {
+    next();
+  } else {
+    res.status(401).json({ error: 'Not authenticated' });
+  }
+};
+
+// Updated Get user profile endpoint
+app.get('/api/v2/profile', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID } = req.session.user;
+    const users = await dbQuery('SELECT * FROM Users WHERE UserID = ?', [UserID]);
+
+    if (users.length > 0) {
+      const user = users[0];
+      // Remove sensitive information
+      delete user.Password;
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (err) {
+    handleErrors(res, err, 'Error fetching user profile');
+  }
+});
+
+// Updated Update user profile endpoint
+app.put('/api/v2/profile', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID } = req.session.user;
+    const { FirstName, LastName, Email, PhoneNumber } = req.body;
+
+    const result = await dbQuery(
+      'UPDATE Users SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ? WHERE UserID = ?',
+      [FirstName, LastName, Email, PhoneNumber, UserID]
+    );
+
+    if (result.affectedRows > 0) {
+      res.json({ message: 'Profile updated successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (err) {
+    handleErrors(res, err, 'Error updating user profile');
+  }
+});
 
 
 // Global error handler
