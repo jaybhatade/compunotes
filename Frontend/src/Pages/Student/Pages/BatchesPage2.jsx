@@ -1,10 +1,10 @@
 import React from 'react'
-import Batches from '../../../Components/Batches'
+import Batches2 from '../SubPages/Batches2'
 
 function BatchesPage2() {
   return (
     <div className='bg-gray-900 text-white h-screen'>
-      <Batches/>
+      <Batches2/>
     </div>
   )
 }
