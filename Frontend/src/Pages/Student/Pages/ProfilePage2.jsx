@@ -13,7 +13,7 @@ const ProfilePage2 = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get('/api/profile');
+      const response = await axios.get('/api/v2/profile');
       setUserData(response.data);
       setEditedData(response.data);
       setLoading(false);
@@ -47,7 +47,7 @@ const ProfilePage2 = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put('/api/profile', editedData);
+      await axios.put('/api/v2/profile', editedData);
       setUserData(editedData);
       setIsEditing(false);
     } catch (error) {
