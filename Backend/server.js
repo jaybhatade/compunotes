@@ -407,41 +407,43 @@ app.delete("/api/users/:id", async (req, res) => {
     }
   });
 
-// Delete a batch
-app.delete("/api/delete-batch/:BatchID", async (req, res) => {
-  try {
-    const { BatchID } = req.params;
-
-    // Start a transaction
-    await pool.query('START TRANSACTION');
-
-    // Delete related records in BatchMembers
-    const [batchMembersResult] = await pool.query("DELETE FROM BatchMembers WHERE BatchID = ?", [BatchID]);
-
-    if (batchMembersResult.affectedRows === 0) {
-      // Optionally, handle cases where there are no related records
-      console.log('No related BatchMembers found for BatchID:', BatchID);
+  app.delete("/api/delete-batch/:BatchID", async (req, res) => {
+    const connection = await pool.getConnection();
+  
+    try {
+      const { BatchID } = req.params;
+  
+      await connection.beginTransaction();
+  
+      // Delete related records in Notes
+      const [notesResult] = await connection.query("DELETE FROM Notes WHERE BatchID = ?", [BatchID]);
+      console.log(`Deleted ${notesResult.affectedRows} related Notes for BatchID ${BatchID}`);
+  
+      // Delete related records in BatchMembers
+      const [batchMembersResult] = await connection.query("DELETE FROM BatchMembers WHERE BatchID = ?", [BatchID]);
+      console.log(`Deleted ${batchMembersResult.affectedRows} related BatchMembers for BatchID ${BatchID}`);
+  
+      // Delete the Batch
+      const [batchResult] = await connection.query("DELETE FROM Batches WHERE BatchID = ?", [BatchID]);
+  
+      if (batchResult.affectedRows === 0) {
+        await connection.rollback();
+        console.warn(`Batch with BatchID ${BatchID} not found, rollback initiated.`);
+        return res.status(404).json({ message: "Batch not found" });
+      }
+  
+      await connection.commit();
+      console.log(`Batch with BatchID ${BatchID} and all related records deleted successfully.`);
+      res.json({ message: "Batch and related records deleted successfully" });
+    } catch (error) {
+      await connection.rollback();
+      console.error('Error deleting batch:', error);
+      res.status(500).json({ message: "Error deleting batch", error: error.message });
+    } finally {
+      connection.release();
     }
-
-    // Delete the batch from Batches
-    const [batchResult] = await pool.query("DELETE FROM Batches WHERE BatchID = ?", [BatchID]);
-
-    if (batchResult.affectedRows === 0) {
-      // If no rows were affected, the batch was not found
-      return res.status(404).json({ error: "Batch not found" });
-    }
-
-    // Commit the transaction
-    await pool.query('COMMIT');
-
-    res.json({ message: "Batch and related records deleted successfully", BatchID });
-  } catch (err) {
-    // Rollback the transaction in case of error
-    await pool.query('ROLLBACK');
-    handleErrors(res, err, "Error deleting batch");
-  }
-});
-
+  });
+  
 
 // Get all batches
 app.get("/api/v1/batches/get-all-batches", async (req, res) => {
