@@ -612,6 +612,26 @@ app.put('/api/v2/profile', isAuthenticated, async (req, res) => {
 });
 
 
+// Fetch batches linked to the logged-in user
+app.get('/api/v3/batches', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID, Username, Role } = req.session.user;
+    
+    const query = `
+      SELECT DISTINCT Batches.BatchID, Batches.BatchName
+      FROM BatchMembers
+      JOIN Users ON BatchMembers.UserID = Users.UserID
+      JOIN Batches ON BatchMembers.BatchID = Batches.BatchID
+      WHERE Users.UserID = ? AND Users.Username = ? AND Users.Role = ?
+    `;
+    
+    const batches = await dbQuery(query, [UserID, Username, Role]);
+    res.json(batches);
+  } catch (error) {
+    handleErrors(res, error, 'Error fetching batches');
+  }
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);

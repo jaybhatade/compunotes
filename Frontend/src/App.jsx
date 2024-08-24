@@ -19,6 +19,7 @@ import SearchPage from './Pages/Student/Pages/SearchPage';
 import NotesPage from './Pages/Student/Pages/NotesPage';
 import ProfilePage2 from './Pages/Student/Pages/ProfilePage2';
 import ManageMembers from './Pages/Admin/SubPages/ManageMembers';
+import BatchNote2 from './Pages/Student/SubPages/BatchNote2';
 
 // Define the AdminLayout component
 const AdminLayout = () => (
@@ -133,7 +134,7 @@ function App() {
               children: [
                 { path: "new", element: <ProtectedRoute element={<NewBatch />} roles={['student']} /> },
                 { path: "details/:batchId", element: <ProtectedRoute element={<BatchDetails />} roles={['student']} /> },
-                { path: ":batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote />} roles={['student']} /> },
+                { path: "details/:batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote2 />} roles={['student']} /> },
               ],
             },
           ],
