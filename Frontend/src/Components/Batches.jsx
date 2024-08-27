@@ -44,7 +44,7 @@ const Batches = () => {
             onClick={() => handleBatchClick(batch.BatchID)}
             className="p-6 bg-gray-800 rounded-xl shadow-lg cursor-pointer transform transition-transform hover:scale-105 hover:bg-gray-700"
           >
-            <h2 className="text-2xl font-semibold text-center text-indigo-100">
+            <h2 className="text-2xl font-semibold text-center text-blue-100">
               {batch.BatchName}
             </h2>
           </div>
@@ -52,7 +52,7 @@ const Batches = () => {
       </div>
       <button
         onClick={handleAddBatch}
-        className="flex items-center justify-center w-full max-w-xs px-6 py-3 bg-indigo-600 rounded-full text-white font-semibold hover:bg-indigo-700 transition-colors"
+        className="flex items-center justify-center w-full max-w-xs px-6 py-3 bg-blue-600 rounded-full text-white font-semibold hover:bg-blue-700 transition-colors"
       >
         <AiFillPlusCircle size={28} className="mr-2" />
         Add & Manage Batches

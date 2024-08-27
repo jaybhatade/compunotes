@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { HiSearch } from 'react-icons/hi';
 import Header from '../../../Components/HeaderComp';
 import CategoryLink from '../../../Components/CategoryLink';
+import StudentNotesCard from '../Components/StudentNotesCard';
 
 // Home Page
 const HomePage2 = () => {
@@ -31,9 +32,7 @@ const HomePage2 = () => {
             <h2 className="text-lg font-semibold">Recent Notes</h2>
             <a href="#" className="text-sm text-blue-400 transition-colors duration-200">View all</a>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            
-          </div>
+          <StudentNotesCard/>
         </section>
         
         <section>

@@ -634,6 +634,26 @@ app.get('/api/v3/batches', isAuthenticated, async (req, res) => {
   }
 });
 
+app.get('/api/v3/student-notes', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID, Username, Role } = req.session.user;
+    
+    const query = `
+      SELECT DISTINCT Notes.NoteID, Notes.Title, Notes.Content, Notes.BatchID
+      FROM Notes
+      JOIN Batches ON Notes.BatchID = Batches.BatchID
+      JOIN BatchMembers ON Batches.BatchID = BatchMembers.BatchID
+      WHERE BatchMembers.UserID = ? AND BatchMembers.Role = 'student'
+      ORDER BY Notes.CreatedAt DESC
+    `;
+    
+    const notes = await dbQuery(query, [UserID]);
+    res.json(notes);
+  } catch (error) {
+    handleErrors(res, error, 'Error fetching notes');
+  }
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
