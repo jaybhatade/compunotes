@@ -18,6 +18,8 @@ const BatchManagement = () => {
   const [selectedStudent, setSelectedStudent] = useState('');
   const [showMemberManagement, setShowMemberManagement] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showConfirmRemoveStudent, setShowConfirmRemoveStudent] = useState(false);
+  const [studentToRemove, setStudentToRemove] = useState(null);
 
   useEffect(() => {
     fetchBatches();
@@ -124,13 +126,19 @@ const BatchManagement = () => {
     }
   };
 
-  const handleRemoveStudent = async (UserID) => {
+  const handleRemoveStudent = (student) => {
+    setStudentToRemove(student);
+    setShowConfirmRemoveStudent(true);
+  };
+
+  const confirmRemoveStudent = async () => {
     setError('');
     setSuccessMessage('');
     try {
-      await axios.delete(`/api/v1/batches/${selectedBatch}/remove-student-from-batch/${UserID}`);
+      await axios.delete(`/api/v1/batches/${selectedBatch}/remove-student-from-batch/${studentToRemove.UserID}`);
       fetchStudentsInBatch();
       setSuccessMessage('Student removed from batch successfully!');
+      setShowConfirmRemoveStudent(false);
     } catch (error) {
       setError('Error removing student from batch. Please try again.');
     }
@@ -142,18 +150,18 @@ const BatchManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8 pb-24">
+    <div className="min-h-screen bg-gray-900 text-white p-4 mb-24">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-white hover:text-gray-400 p-2 rounded-lg transition-colors transform hover:scale-105"
+            className="flex items-center justify-between text-white hover:text-gray-400 p-2 rounded-lg transition-colors transform hover:scale-105"
           >
             <IoArrowBack className="mr-2 text-xl" />
-            <span className="inline">Back</span>
+            <span className="hidden lg:inline">Back</span>
           </button>
-          <h1 className="text-3xl font-bold text-center">Batch Management</h1>
-          <div></div>
+          <h1 className="text-3xl font-bold text-right md:text-center">Batch Management</h1>
+          
         </div>
 
         <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md space-y-4 transform transition-all duration-300 hover:shadow-lg">
@@ -162,13 +170,13 @@ const BatchManagement = () => {
               type="text"
               value={newBatchName}
               onChange={(e) => setNewBatchName(e.target.value)}
-              className="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              className="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
               placeholder={editingBatch ? "Edit batch name" : "Enter new batch name"}
               required
             />
             <button
               type="submit"
-              className="px-6 py-3 w-full md:w-auto bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex justify-center items-center transform hover:scale-105"
+              className="px-6 py-3 w-full md:w-auto bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors flex justify-center items-center transform hover:scale-105"
             >
               <IoAdd className="mr-2" />
               {editingBatch ? 'Update' : 'Add'} Batch
@@ -212,7 +220,7 @@ const BatchManagement = () => {
                     </button>
                     <button
                       onClick={() => handleEdit(batch)}
-                      className="text-blue-400 hover:text-blue-300 transition-colors transform hover:scale-110"
+                      className="text-indigo-400 hover:text-indigo-300 transition-colors transform hover:scale-110"
                     >
                       <IoPencil />
                     </button>
@@ -230,7 +238,7 @@ const BatchManagement = () => {
         </div>
 
         {showMemberManagement && (
-          <div className="bg-gray-800 p-6 rounded-lg shadow-md space-y-6 transform transition-all duration-300 hover:shadow-lg">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md space-y-6 transform transition-all duration-300 hover:shadow-lg mb-36">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">Manage Members - {getSelectedBatchName()}</h2>
               <button
@@ -244,7 +252,7 @@ const BatchManagement = () => {
               <select
                 value={selectedStudent}
                 onChange={(e) => setSelectedStudent(e.target.value)}
-                className="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                className="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
               >
                 <option value="">Select Student</option>
                 {availableStudents.map(student => (
@@ -268,7 +276,7 @@ const BatchManagement = () => {
                   <li key={student.UserID} className="flex justify-between items-center bg-gray-700 p-3 rounded-lg transition-all duration-300 hover:bg-gray-650">
                     <span>{student.FirstName} {student.LastName}</span>
                     <button
-                      onClick={() => handleRemoveStudent(student.UserID)}
+                      onClick={() => handleRemoveStudent(student)}
                       className="text-red-400 hover:text-red-300 transition-colors transform hover:scale-110"
                     >
                       <IoPersonRemove />
@@ -285,7 +293,7 @@ const BatchManagement = () => {
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center space-y-4 animate-scaleIn">
               <h2 className="text-lg font-semibold">Confirm Delete</h2>
               <p>Are you sure you want to delete this batch? 
-                action cannot be undone,<br/> all the notes releted to batch will be deleted</p>
+                This action cannot be undone, all the notes related to batch will be deleted</p>
               <div className="flex justify-center gap-4">
                 <button
                   onClick={() => setShowConfirmDelete(false)}
@@ -303,9 +311,32 @@ const BatchManagement = () => {
             </div>
           </div>
         )}
+
+        {showConfirmRemoveStudent && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 p-4 animate-fadeIn">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center space-y-4 animate-scaleIn">
+              <h2 className="text-lg font-semibold">Confirm Remove Student</h2>
+              <p>Are you sure you want to remove {studentToRemove?.FirstName} {studentToRemove?.LastName} from this batch?</p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setShowConfirmRemoveStudent(false)}
+                  className="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-700 transition-colors transform hover:scale-105"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmRemoveStudent}
+                  className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors transform hover:scale-105"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default BatchManagement; 
+export default BatchManagement;
