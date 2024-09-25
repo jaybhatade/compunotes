@@ -36,7 +36,7 @@ const StudentNotesCard = () => {
       {notes.map((note) => (
         <Link
           key={note.NoteID}
-          to={`/details/${note.BatchID}/notes/${note.NoteID}`}
+          to={`details/${note.BatchID}/notes/${note.NoteID}`}
           className="block"
         >
           <div className="bg-gray-700 shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-300">

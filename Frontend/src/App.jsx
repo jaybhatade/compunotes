@@ -48,9 +48,8 @@ const MainLayout = () => (
   </div>
 );
 
-const NonavLayout = () => (
+const HomeLayout = () => (
   <div>
-    {/* No Navigation Bar Here */}
     <main>
       <Outlet />
     </main>
@@ -88,12 +87,13 @@ function App() {
         { path: "login", element: <LoginPage /> },   // Login page
       ],
     },
+  
     // Admin layout with protected routes
     {
       path: "a",
       element: <AdminLayout />,
       children: [
-        { index: true, path: "home", element: <ProtectedRoute element={<HomePage />} roles={['admin', 'teacher']} /> },   // Admin home page
+        { path: "home", element: <ProtectedRoute element={<HomePage />} roles={['admin', 'teacher']} /> },   // Admin home page
         { path: "add", element: <ProtectedRoute element={<AddNotesPage />} roles={['admin', 'teacher']} /> },   // Add notes page
         { path: "database", element: <ProtectedRoute element={<DatabasePage />} roles={['admin']} /> },   // Admin database page
         { path: "profile", element: <ProtectedRoute element={<ProfilePage />} roles={['admin', 'teacher']} /> },   // Admin/Teacher profile page
@@ -104,7 +104,7 @@ function App() {
           path: "batches",
           element: <BatchesLayout />,
           children: [
-            { index: true, element: <ProtectedRoute element={<BatchesPage />} roles={['admin', 'teacher']} /> },  // Batches main page
+            { index: true, element: <ProtectedRoute element={<BatchesPage />} roles={['admin', 'teacher']} /> },   // Batches main page
             { path: "new", element: <ProtectedRoute element={<NewBatch />} roles={['admin', 'teacher']} /> },   // New batch creation
             { path: "details/:batchId", element: <ProtectedRoute element={<BatchDetails />} roles={['admin', 'teacher']} /> },   // Batch details
             { path: "details/:batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote />} roles={['admin', 'teacher']} /> },   // Batch note details
@@ -113,12 +113,22 @@ function App() {
         },
       ],
     },
+  
     // Student layout with protected routes
     {
       path: "s",
       element: <StudentLayout />,
       children: [
-        { index: true, path: "home", element: <ProtectedRoute element={<HomePage2 />} roles={['student']} /> },   // Student home page
+        // Student home layout
+        {
+          path: "home",
+          element: <HomeLayout />,   // HomeLayout for Student
+          children: [
+            { index: true, element: <ProtectedRoute element={<HomePage2 />} roles={['student']} /> },   // Student home page
+            { path: "details/:batchId/notes/:noteId", element: <ProtectedRoute element={<BatchNote2 />} roles={['student']} /> },   // Batch note details under home
+          ],
+        },
+  
         { path: "search", element: <ProtectedRoute element={<SearchPage />} roles={['student']} /> },   // Search page
         { path: "notes", element: <ProtectedRoute element={<NotesPage />} roles={['student']} /> },   // Notes page
         { path: "profile", element: <ProtectedRoute element={<ProfilePage2 />} roles={['student']} /> },   // Student profile page
@@ -136,6 +146,8 @@ function App() {
       ],
     },
   ]);
+
+  
 
   return (
     <div className='bg-gray-900 min-h-screen'>
