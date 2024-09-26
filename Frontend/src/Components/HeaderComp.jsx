@@ -5,8 +5,7 @@ function Header () {
     return(
     <header className="flex items-center justify-between px-4 py-3 border-b bg-gray-800 border-gray-700 transition-colors duration-200 fixed w-full z-[999]">
       <div className="flex items-center gap-4">
-        <button className="text-2xl text-gray-200 transition-colors duration-200"><HiMenu /></button>
-        <a href="#" className="text-lg font-semibold text-white transition-colors duration-200">Notes</a>
+        <h1 href="#" className="text-lg font-semibold text-white transition-colors duration-200">CompuNotes</h1>
       </div>
       <div className="flex items-center gap-4">
         

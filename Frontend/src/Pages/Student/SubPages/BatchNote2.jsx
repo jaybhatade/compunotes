@@ -6,7 +6,7 @@ import { FiLoader } from "react-icons/fi";
 
 function BatchNote2() {
   const { batchId, noteId } = useParams();
-  
+  const navigate = useNavigate();
   const [note, setNote] = useState(null);
   const [error, setError] = useState(null);
 
@@ -27,7 +27,9 @@ function BatchNote2() {
     fetchNoteDetails();
   }, [noteId]);
 
-  
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
 
   const getYouTubeId = (url) => {
     const regExp =

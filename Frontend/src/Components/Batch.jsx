@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AiOutlineFileText, AiOutlineArrowLeft } from 'react-icons/ai';
+import {FaArrowLeft} from 'react-icons/fa'
+import { AiOutlineFileText } from 'react-icons/ai';
 
 function BatchDetails() {
   const { batchId } = useParams();
@@ -48,9 +49,13 @@ function BatchDetails() {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
       <div className="flex items-center mb-6">
-        <button onClick={handleBack} className="text-gray-400 hover:text-white flex items-center">
-          <AiOutlineArrowLeft className="mr-2" /> Back
-        </button>
+      <button
+            onClick={() => navigate(-1)} // Navigate to the previous page
+            className="flex items-center text-white bg-gray-700 hover:bg-gray-600 transition duration-200 px-4 py-2 rounded-md"
+          >
+            <FaArrowLeft className="mr-2" />
+            Back
+          </button>
       </div>
 
       <h1 className="text-2xl md:text-4xl font-bold mb-6">{batch.BatchName}</h1>
