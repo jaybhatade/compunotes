@@ -3,6 +3,7 @@ import { HiSearch } from 'react-icons/hi';
 import Header from '../../../Components/HeaderComp';
 import CategoryLink from '../../../Components/CategoryLink';
 import StudentNotesCard from '../Components/StudentNotesCard';
+import CategoryList from '../Components/CategoryLink2';
 
 // Home Page
 const HomePage2 = () => {
@@ -29,11 +30,8 @@ const HomePage2 = () => {
             <h2 className="text-lg font-semibold">Note Categories</h2>
             <a href="#" className="text-sm text-blue-400 transition-colors duration-200">View all</a>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <CategoryLink name="React" />
-            <CategoryLink name="Java" />
-            <CategoryLink name="Tailwind CSS" />
-            <CategoryLink name="JavaScript" />
+          <div className="">
+            <CategoryList/>
           </div>
         </section>
 

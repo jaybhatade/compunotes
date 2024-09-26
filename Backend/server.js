@@ -654,6 +654,43 @@ app.get('/api/v3/student-notes', isAuthenticated, async (req, res) => {
   }
 });
 
+// Fetch Categories
+app.get('/api/v4/notes/categories', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID, Role } = req.session.user; // Get user details from session
+
+    // Ensure the user is a student to fetch their batch-specific categories
+    if (Role !== 'student') {
+      return res.status(403).json({ error: 'Unauthorized access. Only students can view categories.' });
+    }
+
+    // SQL query to fetch distinct categories from the batches where the user is a member
+    const query = `
+      SELECT DISTINCT Notes.Category
+      FROM Notes
+      JOIN Batches ON Notes.BatchID = Batches.BatchID
+      JOIN BatchMembers ON Batches.BatchID = BatchMembers.BatchID
+      WHERE BatchMembers.UserID = ? AND BatchMembers.Role = 'student'
+      AND Notes.Category IS NOT NULL
+    `;
+
+    const categories = await dbQuery(query, [UserID]);
+
+    // If no categories are found, return a message
+    if (categories.length === 0) {
+      return res.status(404).json({ message: 'No categories found for your batches' });
+    }
+
+    // Return the list of categories
+    res.json(categories);
+  } catch (err) {
+    // Error handling
+    handleErrors(res, err, 'Error fetching categories');
+  }
+});
+
+
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
