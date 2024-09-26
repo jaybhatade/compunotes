@@ -20,7 +20,7 @@ import NotesPage from "./Pages/Student/Pages/NotesPage";
 import ProfilePage2 from "./Pages/Student/Pages/ProfilePage2";
 import ManageMembers from "./Pages/Admin/SubPages/ManageMembers";
 import BatchNote2 from "./Pages/Student/SubPages/BatchNote2";
-import router from "./Routes";
+import CategoryNotesView from "./Pages/Student/Components/CategoryNotesView";
 
 // Define the AdminLayout component
 const AdminLayout = () => (
@@ -208,7 +208,7 @@ const Rrouter = createBrowserRouter([
           {
             path: "categories",
             element: (
-              <ProtectedRoute element={<BatchNote2 />} roles={["student"]} />
+              <ProtectedRoute element={<CategoryNotesView />} roles={["student"]} />
             ),
           },
         ],

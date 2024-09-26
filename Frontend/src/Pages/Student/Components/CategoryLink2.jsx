@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiOutlineChevronRight } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 // Category Link Component
 const CategoryLink2 = ({ name }) => (
-  <a
-    href="home/categories"
+  <Link
+    to={"categories"}
     className="shadow bg-gray-700 rounded-lg px-4 py-3 flex items-center justify-between transition-colors duration-200"
   >
     <div className="text-sm font-medium text-gray-200 transition-colors duration-200">{name}</div>
     <HiOutlineChevronRight className="text-gray-500 transition-colors duration-200" />
-  </a>
+  </Link>
 );
 
 const CategoryList = () => {
