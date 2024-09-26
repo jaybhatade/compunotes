@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 // Category Link Component
 const CategoryLink2 = ({ name }) => (
   <Link
-    to={"categories"}
+    to={`category/${name}`}
     className="shadow bg-gray-700 rounded-lg px-4 py-3 flex items-center justify-between transition-colors duration-200"
   >
     <div className="text-sm font-medium text-gray-200 transition-colors duration-200">{name}</div>

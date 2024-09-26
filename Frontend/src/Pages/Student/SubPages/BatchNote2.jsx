@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { AiOutlineArrowLeft } from 'react-icons/ai';
-import { FiLoader } from 'react-icons/fi';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FaArrowLeft } from 'react-icons/fa';
+import { FiLoader } from "react-icons/fi";
 
 function BatchNote2() {
   const { batchId, noteId } = useParams();
-  const navigate = useNavigate();
+  
   const [note, setNote] = useState(null);
   const [error, setError] = useState(null);
 
@@ -17,22 +17,21 @@ function BatchNote2() {
         if (response.data && response.data.NoteID) {
           setNote(response.data);
         } else {
-          setError('Note not found');
+          setError("Note not found");
         }
       } catch (error) {
-        setError('Failed to load note details. Please try again later.');
+        setError("Failed to load note details. Please try again later.");
       }
     };
 
     fetchNoteDetails();
   }, [noteId]);
 
-  const handleBack = () => {
-    navigate(-1); // Go back to the previous page
-  };
+  
 
   const getYouTubeId = (url) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url?.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
@@ -55,10 +54,16 @@ function BatchNote2() {
 
   return (
     <div className="bg-gray-900 min-h-screen p-4 pb-24">
-      <div className="flex justify-between items-center mb-4">
-        <button onClick={handleBack} className="text-gray-400 hover:text-white flex items-center">
-          <AiOutlineArrowLeft className="mr-2" /> Back
-        </button>
+      <div className="flex justify-between items-center">
+        <div className="">
+          <button
+            onClick={() => navigate(-1)} // Navigate to the previous page
+            className="flex items-center text-white bg-gray-700 hover:bg-gray-600 transition duration-200 px-4 py-2 rounded-md"
+          >
+            <FaArrowLeft className="mr-2" />
+            Back
+          </button>
+        </div>
       </div>
 
       <h1 className="text-3xl font-bold text-white mb-4 mt-8">{note.Title}</h1>
@@ -73,9 +78,14 @@ function BatchNote2() {
       )}
 
       {note.VideoLink && getYouTubeId(note.VideoLink) && (
-        <div className="relative mb-4" style={{ paddingBottom: '56.25%', height: 0 }}>
+        <div
+          className="relative mb-4"
+          style={{ paddingBottom: "56.25%", height: 0 }}
+        >
           <iframe
-            src={`https://www.youtube.com/embed/${getYouTubeId(note.VideoLink)}`}
+            src={`https://www.youtube.com/embed/${getYouTubeId(
+              note.VideoLink
+            )}`}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

@@ -689,6 +689,41 @@ app.get('/api/v4/notes/categories', isAuthenticated, async (req, res) => {
   }
 });
 
+// Fetch Filtered Caterory Notes 
+app.get('/api/v4/category/notes', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID, Role } = req.session.user;
+
+    // Ensure the user is a student
+    if (Role !== 'student') {
+      return res.status(403).json({ error: 'Unauthorized access. Only students can view notes.' });
+    }
+
+    // Base SQL query to fetch notes for the student
+    let query = `
+      SELECT DISTINCT Notes.NoteID, Notes.Title, Notes.Content, Notes.BatchID, Notes.Category
+      FROM Notes
+      JOIN Batches ON Notes.BatchID = Batches.BatchID
+      JOIN BatchMembers ON Batches.BatchID = BatchMembers.BatchID
+      WHERE BatchMembers.UserID = ? AND BatchMembers.Role = 'student'
+    `;
+
+    const queryParams = [UserID];
+
+   
+
+    query += ' ORDER BY Notes.CreatedAt DESC';
+
+    // Execute the query with the constructed query string and parameters
+    const categoryNotes = await dbQuery(query, queryParams);
+
+    // Return the notes in the response
+    res.json(categoryNotes);
+  } catch (categoryNotes) {
+    handleErrors(res, error, 'Error fetching student notes');
+  }
+});
+
 
 
 // Global error handler

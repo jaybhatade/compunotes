@@ -91,7 +91,9 @@ const Rrouter = createBrowserRouter([
   // Admin layout with protected routes
   {
     path: "a",
-    element: <AdminLayout />,
+    element: (
+        <ProtectedRoute element={<AdminLayout />} roles={["admin"]} />
+        ),
     children: [
       {
         path: "home",
@@ -186,7 +188,9 @@ const Rrouter = createBrowserRouter([
   // Student layout with protected routes
   {
     path: "s",
-    element: <StudentLayout />,
+    element: (
+    <ProtectedRoute element={<StudentLayout />} roles={["student"]} />
+    ),
     children: [
       // Student home layout
       {
@@ -206,7 +210,7 @@ const Rrouter = createBrowserRouter([
             ),
           },
           {
-            path: "categories",
+            path: "category/:category",
             element: (
               <ProtectedRoute element={<CategoryNotesView />} roles={["student"]} />
             ),
