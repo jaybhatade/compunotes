@@ -4,6 +4,7 @@ import Header from '../../../Components/HeaderComp';
 import CategoryLink from '../../../Components/CategoryLink';
 import StudentNotesCard from '../Components/StudentNotesCard';
 import CategoryList from '../Components/CategoryLink2';
+import { Link } from 'react-router-dom';
 
 // Home Page
 const HomePage2 = () => {
@@ -20,7 +21,7 @@ const HomePage2 = () => {
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Recent Notes</h2>
-            <a href="#" className="text-sm text-blue-400 transition-colors duration-200">View all</a>
+            <Link to={"all/notes"} className="text-sm text-blue-400 transition-colors duration-200">View all</Link>
           </div>
           <StudentNotesCard/>
         </section>
