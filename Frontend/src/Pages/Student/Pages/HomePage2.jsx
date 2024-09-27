@@ -29,7 +29,7 @@ const HomePage2 = () => {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Note Categories</h2>
-            <a href="#" className="text-sm text-blue-400 transition-colors duration-200">View all</a>
+            <Link to={"all/categories"} className="text-sm text-blue-400 transition-colors duration-200">View all</Link>
           </div>
           <div className="">
             <CategoryList/>

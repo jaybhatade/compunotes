@@ -38,7 +38,7 @@ const AllStudentNotesCard = () => {
       <div className="flex justify-between items-center bg-gray-900 pt-6 pb-2 mb-4 sticky top-0 z-[900] backdrop-blur-sm w-full px-6 shadow-lg shadow-gray-900">
       <button
           onClick={() => navigate(-1)} // Navigate to the previous page
-          className="flex items-center text-white bg-gray-800 hover:bg-gray-600 transition duration-200 px-4 py-2 rounded-md"
+          className="flex items-center text-white bg-gray-700 hover:bg-gray-600 transition duration-200 px-4 py-2 rounded-md"
         >
           <FaArrowLeft className="mr-2" />
           Back

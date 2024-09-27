@@ -21,8 +21,8 @@ import ProfilePage2 from "./Pages/Student/Pages/ProfilePage2";
 import ManageMembers from "./Pages/Admin/SubPages/ManageMembers";
 import BatchNote2 from "./Pages/Student/SubPages/BatchNote2";
 import CategoryNotesView from "./Pages/Student/Components/CategoryNotesView";
-import StudentNotesCard from "./Pages/Student/Components/StudentNotesCard";
 import AllStudentNotesCard from "./Pages/Student/SubPages/AllStudentNotesCard";
+import AllCategoriesList from "./Pages/Student/SubPages/AllCategoriesList";
 
 // Define the AdminLayout component
 const AdminLayout = () => (
@@ -221,6 +221,12 @@ const Rrouter = createBrowserRouter([
             path: "all/notes",
             element: (
               <ProtectedRoute element={<AllStudentNotesCard />} roles={["student"]} />
+            ),
+          },
+          {
+            path: "all/categories",
+            element: (
+              <ProtectedRoute element={<AllCategoriesList />} roles={["student"]} />
             ),
           },
         ],
