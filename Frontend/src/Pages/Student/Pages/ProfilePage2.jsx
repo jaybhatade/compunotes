@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaUserAlt, FaEnvelope, FaPhone, FaIdBadge } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaIdBadge, FaUserAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const ProfilePage2 = () => {
@@ -19,7 +19,7 @@ const ProfilePage2 = () => {
       setLoading(false);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        navigate('/login');  // Redirect to login if not authenticated
+        navigate('/login'); // Redirect to login if not authenticated
       } else {
         setError('Failed to fetch user data.');
         setLoading(false);
@@ -80,68 +80,68 @@ const ProfilePage2 = () => {
 
   const { Username, FirstName, LastName, Email, PhoneNumber, Role, ProfileIcon } = isEditing ? editedData : userData;
 
-
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-900 p-4">
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full text-white">
-        <div className="flex justify-center mb-6">
-          {ProfileIcon ? (
-            <img src={ProfileIcon} alt="Profile" className="rounded-full h-24 w-24" />
-          ) : (
-            <FaUserAlt className="text-6xl" />
-          )}
-        </div>
-        <h2 className="text-3xl font-semibold text-center mb-4">{`${FirstName} ${LastName}`}</h2>
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <FaIdBadge className="mr-2" />
-            <span>{Username}</span>
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 p-6">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full text-white transition-all transform hover:scale-105 duration-300">
+        {/* Show profile picture only if ProfileIcon exists */}
+        {ProfileIcon && (
+          <div className="flex justify-center mb-6">
+            <img src={ProfileIcon} alt="Profile" className="rounded-full h-24 w-24 border-4 border-blue-500 shadow-md" />
           </div>
-          <div className="flex items-center">
-            <FaEnvelope className="mr-2" />
+        )}
+        
+        <h2 className="text-3xl font-bold text-center mb-4">{`${FirstName} ${LastName}`}</h2>
+        <div className="space-y-6">
+          <div className="flex items-center bg-gray-700 rounded-md p-3">
+            <FaIdBadge className="mr-3 text-blue-500" />
+            <span className="text-lg">{Username}</span>
+          </div>
+          <div className="flex items-center bg-gray-700 rounded-md p-3">
+            <FaEnvelope className="mr-3 text-blue-500" />
             {isEditing ? (
               <input
                 type="email"
                 name="Email"
                 value={Email}
                 onChange={handleChange}
-                className="bg-gray-700 text-white rounded px-2 py-1"
+                className="bg-transparent text-white outline-none w-full"
               />
             ) : (
               <span>{Email}</span>
             )}
           </div>
-          <div className="flex items-center">
-            <FaPhone className="mr-2" />
+          <div className="flex items-center bg-gray-700 rounded-md p-3">
+            <FaPhone className="mr-3 text-blue-500" />
             {isEditing ? (
               <input
                 type="tel"
                 name="PhoneNumber"
                 value={PhoneNumber || ''}
                 onChange={handleChange}
-                className="bg-gray-700 text-white rounded px-2 py-1"
+                className="bg-transparent text-white outline-none w-full"
               />
             ) : (
               <span>{PhoneNumber || 'N/A'}</span>
             )}
           </div>
-          <div className="flex items-center">
-            <FaUserAlt className="mr-2" />
+          <div className="flex items-center bg-gray-700 rounded-md p-3">
+            <FaUserAlt className="mr-3 text-blue-500" />
             <span className="capitalize">{Role}</span>
           </div>
         </div>
-        <div className="mt-6 flex justify-between">
+
+        <div className="mt-8 flex justify-between">
           {isEditing ? (
             <>
               <button
                 onClick={handleSave}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md"
               >
                 Save
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md"
               >
                 Cancel
               </button>
@@ -150,13 +150,13 @@ const ProfilePage2 = () => {
             <>
               <button
                 onClick={handleEdit}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md"
               >
                 Edit Profile
               </button>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md"
               >
                 Logout
               </button>

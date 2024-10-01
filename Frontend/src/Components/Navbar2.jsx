@@ -13,7 +13,8 @@ const NavigationBar2 = () => {
     ];
 
     return (
-        <nav className="flex items-center justify-between md:px-16 px-6 xl:justify-evenly py-3 border-t bg-gray-800 border-gray-700 transition-colors duration-200 fixed w-full z-[999] bottom-0">
+        <nav className="flex items-center justify-between md:px-16 px-6 xl:justify-evenly py-3 border-t bg-gray-800 border-gray-700 
+            transition-colors duration-200 fixed w-full z-[999] bottom-0 [box-shadow:0_-5px_15px_-5px_rgba(0,0,0,0.5)]">
             {navItems.map(({ name, icon: Icon, path }) => (
                 <NavLink
                     key={name}
