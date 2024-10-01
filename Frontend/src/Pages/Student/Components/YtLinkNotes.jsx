@@ -7,19 +7,19 @@ const YtLinkNotes = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [numOfNotes, setNumOfNotes] = useState(6); // Default to 6 for larger screens
+  const [numOfNotes, setNumOfNotes] = useState(12); // Default to 6 for larger screens
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 0) {
-        setNumOfNotes(6); // Show 3 notes on mobile screens
-      } 
+        setNumOfNotes(6); // Show 6 notes on mobile screens
+      }
     };
 
     // Set the initial number of notes based on screen size
     handleResize();
 
-    // Listen for window resize events to adjust number of notes
+    // Listen for window resize events to adjust the number of notes
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -61,7 +61,8 @@ const YtLinkNotes = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-8">
+    <div className=' py-4'>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       {notes.slice(0, numOfNotes).map((note) => (
         <Link
           key={note.NoteID}
@@ -69,17 +70,16 @@ const YtLinkNotes = () => {
           className="block"
         >
           <div className="bg-gray-800 shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-300">
-            <div className="flex items-center mb-2">
-              <FaBook className="text-blue-500 mr-2" />
-              <h3 className="text-lg font-semibold text-white">{note.Title}</h3>
-            </div>
-            <p className="text-white line-clamp-1 mb-2">{note.Content}</p>
+            {/* Skeleton loader for the YouTube embed link */}
+            {loading && (
+              <div className="aspect-w-16 aspect-h-9 bg-black animate-pulse rounded-lg mb-4"></div>
+            )}
 
             {/* If the note contains a VideoLink, show the YouTube embed */}
-            {note.VideoLink && getYouTubeID(note.VideoLink) && (
-              <div className="mt-4">
+            {!loading && note.VideoLink && getYouTubeID(note.VideoLink) && (
+              <div className="">
                 <iframe
-                  className="w-full h-40 sm:h-48 md:h-64 lg:h-72 rounded-lg"
+                  className="w-full h-40 sm:h-48 md:h-64 lg:h-60 rounded-lg"
                   src={`https://www.youtube.com/embed/${getYouTubeID(note.VideoLink)}`}
                   title="YouTube video"
                   frameBorder="0"
@@ -88,9 +88,16 @@ const YtLinkNotes = () => {
                 />
               </div>
             )}
+
+            <div className="flex items-center mb-2 mt-4">
+              <FaBook className="text-blue-500 mr-2" />
+              <h3 className="text-lg font-semibold text-white">{note.Title}</h3>
+            </div>
+            <p className="text-white line-clamp-2">{note.Content}</p>
           </div>
         </Link>
       ))}
+    </div>
     </div>
   );
 };

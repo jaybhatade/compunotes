@@ -49,7 +49,7 @@ const SearchStudentNotes = () => {
 
   return (
     <div className="min-h-screen w-screen bg-gray-900 text-white">
-      <div className="flex flex-col items-center pt-6 pb-4 px-4">
+      <div className="flex flex-col items-center pt-6 mb-4 px-4 sticky top-0 z-[9999] bg-gray-900 shadow-lg shadow-gray-900">
         <h1 className="text-xl font-bold mb-4">Search Notes</h1>
         <div className="relative w-full max-w-md mb-6">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3">

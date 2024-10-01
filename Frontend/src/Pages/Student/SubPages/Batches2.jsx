@@ -65,7 +65,7 @@ const Batches2 = () => {
             onClick={() => handleBatchClick(batch.BatchID)}
             className="p-6 bg-gray-800 rounded-xl shadow-lg cursor-pointer transform transition-transform hover:scale-105 hover:bg-gray-700"
           >
-            <h2 className="text-2xl font-semibold text-center text-blue-100">
+            <h2 className="text-2xl font-semibold text-center text-white">
               {batch.BatchName}
             </h2>
           </div>
