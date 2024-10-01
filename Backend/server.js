@@ -654,6 +654,27 @@ app.get('/api/v3/student-notes', isAuthenticated, async (req, res) => {
   }
 });
 
+app.get('/api/v4/student-notes', isAuthenticated, async (req, res) => {
+  try {
+    const { UserID, Username, Role } = req.session.user;
+
+    const query = `
+      SELECT DISTINCT Notes.NoteID, Notes.Title, Notes.Content, Notes.VideoLink, Notes.BatchID
+      FROM Notes
+      JOIN Batches ON Notes.BatchID = Batches.BatchID
+      JOIN BatchMembers ON Batches.BatchID = BatchMembers.BatchID
+      WHERE BatchMembers.UserID = ? AND BatchMembers.Role = 'student'
+      ORDER BY Notes.CreatedAt DESC
+    `;
+
+    const notes = await dbQuery(query, [UserID]);
+    res.json(notes);
+  } catch (error) {
+    handleErrors(res, error, 'Error fetching notes');
+  }
+});
+
+
 // Fetch Categories
 app.get('/api/v4/notes/categories', isAuthenticated, async (req, res) => {
   try {
